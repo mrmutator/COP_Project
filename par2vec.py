@@ -1,19 +1,9 @@
 __author__ = 'rwechsler'
-from gensim import utils
 from gensim.models.doc2vec import TaggedDocument
 from gensim.models import Doc2Vec
-from swda import CorpusReader
-from nltk import word_tokenize
-import re
+from corpora import get_swda_utterances, get_SB_utterances
 import random
-
-def get_utterances(swda_dir):
-    corpus = CorpusReader(swda_dir)
-
-    for trans in  corpus.iter_transcripts(display_progress=True):
-            for utt in trans.utterances:
-                yield utt.damsl_act_tag(), utt.text.lower()
-
+import pickle
 
 def get_similar_utterances(utt, model, utterances):
     utt_vector = model.infer_vector(utt.split())
@@ -24,14 +14,24 @@ def get_similar_utterances(utt, model, utterances):
     for utt_label, sim in similar_utterances:
         print utterances[utt_label], sim
 
+def save_all_models(model, utterances, file_name):
+    model.save(file_name + ".model")
+    pickle.dump(utterances, open(file_name + ".utt", "wb"))
+
+def load_all_models(file_name):
+    model = Doc2Vec.load(file_name + ".model")
+    utterances = pickle.load(open(file_name + ".utt", "rb"))
+    return model, utterances
+
+
+
 if __name__ == "__main__":
 
     utterance_tag_set = []
     utterances = dict()
-    for i, (tag, utt) in enumerate(get_utterances("swda")):
-        utt_tokens =  word_tokenize(re.sub(r'\{.+? |\}|\[|\]|\+|#|/|<.+?>', "", utt))
+    for i, (tag, utt_tokens) in enumerate(get_swda_utterances("data/swda")):
         utterance_tag_set.append(TaggedDocument(utt_tokens, [unicode(tag + '_%s' % i)]))
-        utterances[unicode(tag + "_%s"%i)] = utt
+        utterances[unicode(tag + "_%s"%i)] = " ".join(utt_tokens)
 
 
     print len(utterances)
@@ -48,7 +48,9 @@ if __name__ == "__main__":
         model.train(utterance_tag_set)
 
 
-    model.save("test.model")
+    save_all_models(model, utterances, "data/test")
+
+    #model.save("test.model")
 
     #model = Doc2Vec.load("test.model")
 
