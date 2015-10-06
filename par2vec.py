@@ -6,7 +6,7 @@ import random
 import pickle
 
 def get_similar_utterances(utt, model, utterances):
-    utt_vector = model.infer_vector(utt.split())
+    utt_vector = model.infer_vector(utt.lower().split())
 
     similar_utterances = model.docvecs.most_similar([utt_vector])
 
@@ -33,6 +33,9 @@ if __name__ == "__main__":
         utterance_tag_set.append(TaggedDocument(utt_tokens, [unicode(tag + '_%s' % i)]))
         utterances[unicode(tag + "_%s"%i)] = " ".join(utt_tokens)
 
+    for tag, utt_tokens in get_SB_utterances("data/SB"):
+        utterance_tag_set.append(TaggedDocument(utt_tokens, [unicode(tag)]))
+        utterances[unicode(tag)] = " ".join(utt_tokens)
 
     print len(utterances)
 
@@ -50,9 +53,7 @@ if __name__ == "__main__":
 
     save_all_models(model, utterances, "data/test")
 
-    #model.save("test.model")
-
-    #model = Doc2Vec.load("test.model")
+    #model, utterances = load_all_models("data/test")
 
     get_similar_utterances("thank you", model, utterances)
 

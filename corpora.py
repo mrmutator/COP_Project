@@ -3,6 +3,7 @@ from swda import CorpusReader
 import glob
 from nltk import word_tokenize
 import re
+import codecs
 
 def get_swda_utterances(swda_dir):
     corpus = CorpusReader(swda_dir)
@@ -15,7 +16,7 @@ def get_swda_utterances(swda_dir):
 def get_SB_utterances(SB_dir):
     for f in glob.glob(SB_dir + "/*.trn"):
         line_no = 0
-        infile = open(f, "r")
+        infile = codecs.open(f, "r", "latin-1")
         for line in infile:
             line_no += 1
             elements = line.strip().split("\t")
