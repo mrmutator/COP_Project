@@ -1,0 +1,137 @@
+% !TEX root = report.tex
+
+\documentclass{sig-alternate}
+
+\usepackage[bookmarks=true%
+,bookmarksnumbered=true%
+,hypertexnames=false%
+,breaklinks=true%
+,colorlinks=true%
+,linkcolor=blue%
+,citecolor=blue%
+,urlcolor=blue%
+]{hyperref}
+\hypersetup{
+  pdfauthor = {},
+  pdftitle = {Multileave},
+  pdfsubject = {},
+  pdfkeywords = {H.3 [Information Storage and Retrieval]},
+  pdfcreator = {LaTeX with hyperref package},
+  pdfproducer = {pdflatex}
+}
+
+\newcommand{\shout}[1]{\textcolor{red}{#1}}
+
+\usepackage{booktabs} 
+\usepackage{graphicx}
+\usepackage{url,times}
+\usepackage{microtype}
+\usepackage{tabularx,amsmath}
+\usepackage{amssymb}
+\usepackage{multirow}
+\usepackage[square,comma,numbers,sort&compress,sectionbib]{natbib}
+\usepackage{color}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage[normalem]{ulem}
+\usepackage[english]{babel}
+\usepackage{statex}
+\usepackage[noend]{algorithmic}
+\usepackage{algorithm}
+\usepackage{paralist}
+\usepackage{flushend}
+\usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage{pgfplots}
+\usepackage{todonotes,url}
+
+% \graphicspath{images}
+
+
+\providecommand{\argmax}{\operatornamewithlimits{arg\,max}}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\rank}{rank}
+
+
+% % stuff for condensed list 
+\newbox\itembox
+\def\itemlistlabel#1{#1\hfill}
+\def\itemlist#1{\setbox\itembox=\hbox{#1}%
+                \list{}{\labelwidth\wd\itembox
+                             \leftmargin\labelwidth
+                             \advance\leftmargin by\itemindent
+                             \advance\leftmargin by\labelsep
+                             \let\makelabel\itemlistlabel}}
+\let\enditemlist\endlist
+
+\definecolor{darkgreen}{rgb}{0,0.5,0}
+\definecolor{darkred}{rgb}{0.7,0,0}
+\definecolor{darkblue}{rgb}{0.1,0,0.7}
+\definecolor{teal}{rgb}{0.2,0.6,0.6}
+\definecolor{strawberry}{rgb}{1.0,0.2,0.2}
+\definecolor{pinkerry}{rgb}{1.0,0.6,1.0}
+
+\newcommand{\mdr}[1]{\textcolor{orange}{#1}}
+\newcommand{\masrour}[1]{\textcolor{blue}{MZ: #1}}
+\definecolor{MyBlue}{rgb}{0.0,0.6,0.8}
+\newcommand{\changed}[1]{\textcolor{MyBlue}{#1}}
+
+\newcommand{\david}[1]{\textcolor{darkblue}{[DW: #1]}}
+\newcommand{\roger}[1]{\textcolor{darkred}{[RW: #1]}}
+\newcommand{\lau}[1]{\textcolor{darkyellow}{[LQ: #1]}}
+
+\newcommand{\enkelop}{$^{\vartriangle}$}
+\newcommand{\dubbelop}{$^{\blacktriangle}$}
+\newcommand{\enkelneer}{$^{\triangledown}$}
+\newcommand{\dubbelneer}{$^{\blacktriangledown}$}
+%\newcommand{\newblock}{}
+\newcommand{\bigshrink}{\vspace*{-\baselineskip}}
+\newcommand{\miniskip}{\vspace*{-.5\baselineskip}}
+\newcommand{\shrink}{\vspace*{-.2\baselineskip}}
+\newcommand{\rvec}{\mathbf{r}}
+\newcommand{\cvec}{\mathbf{c}}
+
+\newcommand{\tr}{^\intercal}  % Transpose
+
+\def\ci{\perp\!\!\!\perp} 
+
+% Theorem
+\newtheorem{theorem}{Theorem}
+
+\usepgfplotslibrary{fillbetween}
+\usepackage{subfig}
+% \usepackage{nips14submit_e,times}
+% \usepackage{hyperref}
+% \usepackage{amsmath}
+% \usepackage{graphicx}
+% \usepackage{bbm} 
+% \usepackage{algpseudocode}
+% \usepackage{multirow}
+% \usepackage{algorithm}
+% \usepackage{amssymb}
+% \usepackage{colortbl}
+% % \usepackage{amsthm}     
+% \usepackage{enumerate}
+% \usepackage{url}
+% \usepackage{tikz-qtree}
+% \newcommand{\specialcell}[2][c]{%
+%   \begin{tabular}[#1]{@{}c@{}}#2\end{tabular}}
+  
+
+
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to \LaTeX{} to determine where to break
+% the lines. Using \AND forces a linebreak at that point. So, if \LaTeX{}
+% puts 3 of 4 authors names on the first line, and the last on the second
+% line, try using \AND instead of \And before the third author name.
+
+% \newcommand{\fix}{\marginpar{FIX}}
+% \newcommand{\new}{\marginpar{NEW}}
+% \graphicspath{ {./images/} }
+% \usepackage[backend=bibtex,style=numeric]{biblatex}
+% \addbibresource{bibtex}
+% \nipsfinalcopy % Uncomment for camera-ready version
+
+% \newcommand{\todo}[1]{\textcolor{red}{#1}}
