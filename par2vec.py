@@ -1,7 +1,7 @@
 __author__ = 'rwechsler'
 from gensim.models.doc2vec import TaggedDocument
 from gensim.models import Doc2Vec
-from corpora import get_swda_utterances, get_SB_utterances
+from corpora import get_utterances_from_file
 import random
 import pickle
 
@@ -29,11 +29,15 @@ if __name__ == "__main__":
 
     utterance_tag_set = []
     utterances = dict()
-    for i, (tag, utt_tokens) in enumerate(get_swda_utterances("data/swda")):
+    for i, (tag, utt_tokens) in enumerate(get_utterances_from_file("data/swda_utterances.txt")):
         utterance_tag_set.append(TaggedDocument(utt_tokens, [unicode(tag + '_%s' % i)]))
         utterances[unicode(tag + "_%s"%i)] = " ".join(utt_tokens)
 
-    for tag, utt_tokens in get_SB_utterances("data/SB"):
+    # for tag, utt_tokens in get_utterances_from_file("data/SB_utterances.txt"):
+    #     utterance_tag_set.append(TaggedDocument(utt_tokens, [unicode(tag)]))
+    #     utterances[unicode(tag)] = " ".join(utt_tokens)
+
+    for tag, utt_tokens in get_utterances_from_file("data/BNC_utterances.txt"):
         utterance_tag_set.append(TaggedDocument(utt_tokens, [unicode(tag)]))
         utterances[unicode(tag)] = " ".join(utt_tokens)
 
@@ -45,10 +49,15 @@ if __name__ == "__main__":
     # use pretrained word2vec model to initialize word parameters
     model.intersect_word2vec_format("data/GoogleNews-vectors-negative300.bin.gz", binary=True)
 
-    for epoch in range(10):
-        print epoch
+
+    alpha, min_alpha, passes = (0.025, 0.001, 10)
+    alpha_delta = (alpha - min_alpha) / passes
+    for epoch in range(passes):
+        print "Epoch: ", epoch
         random.shuffle(utterance_tag_set)
+        model.alpha, model.min_alpha = alpha, alpha
         model.train(utterance_tag_set)
+        alpha -= alpha_delta
 
 
     save_all_models(model, utterances, "data/test")

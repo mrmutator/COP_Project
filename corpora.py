@@ -57,28 +57,28 @@ def get_bnc_utterances(bnc_dir):
         for name in files:
             file_name =  os.path.join(root, name)
             if file_name.endswith(".xml"):
-                print "parsing" + file_name
+                print "parsing " + file_name
                 tree = ET.parse(open(file_name, "r"))
-                doc_id = tree.getroot().attrib['{http://www.w3.org/XML/1998/namespace}id']
+                doc_id = tree.getroot().attrib['{http://www.w3.org/XML/1998/namespace}id'].strip()
                 for turn in tree.xpath("//u"):
                     for utt in turn.xpath("s"): # utterances in BNC mean turns, so we use one sentence s as utterance
                         utt_id =  utt.attrib['n']
-                        tokens = [w.text.lower() for w in utt.xpath(".//w|c")]
-                        yield doc_id + "_" + utt_id, tokens
+                        tokens = [w.text.lower().strip() for w in utt.xpath(".//w|c")]
+                        if tokens:
+                            yield doc_id + "_" + utt_id, tokens
 
 
 
 
 
 if __name__ == "__main__":
-    # for tag, utt in get_SB_utterances("data/SB"):
-        # print tag, utt
-    # corpus = get_swda_utterances("data/swda_file.txt")
-    # write_file(corpus, "data/swda_file.txt")
-    #
-    #for tag, tokens in get_swda_utterances_from_file("data/swda_file.txt"):
-    #     print tag, tokens
-    #corpus = get_bnc_utterances("data/BNC_XML/Texts/")
-    #write_file(corpus, "BNC_utterances.txt")
-    pass
+    # write preprocessed utterances files to speed up further processing
+    corpus = get_swda_utterances("data/swda")
+    write_file(corpus, "data/swda_file.txt")
+
+    corpus = get_SB_utterances("data/SB")
+    write_file(corpus, "SB_utterances.txt")
+
+    corpus = get_bnc_utterances("data/BNC_XML/Texts")
+    write_file(corpus, "data/BNC_utterances.txt")
 
