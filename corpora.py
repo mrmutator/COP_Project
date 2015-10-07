@@ -49,15 +49,10 @@ def write_file(corpus, outfile_name):
 def get_swda_utterances_from_file(swda_file):
     infile = codecs.open(swda_file, "r", "utf-8")
     for line in infile:
-        try:
-            tag, utt = line.strip().split("\t")
-        except ValueError:
-            print "---->>>>>>", line.strip(), line.split("\t")
-            break
+        tag, utt = line.strip().split("\t")
         yield tag, utt.split()
 
 def get_bnc_utterances(bnc_dir):
-
     for root, dirs, files in os.walk(bnc_dir):
         for name in files:
             file_name =  os.path.join(root, name)
@@ -81,8 +76,9 @@ if __name__ == "__main__":
     # corpus = get_swda_utterances("data/swda_file.txt")
     # write_file(corpus, "data/swda_file.txt")
     #
-    # for tag, tokens in get_swda_utterances_from_file("data/swda_file.txt"):
+    #for tag, tokens in get_swda_utterances_from_file("data/swda_file.txt"):
     #     print tag, tokens
-    corpus = get_bnc_utterances("data/BNC_XML/Texts/")
-    write_file(corpus, "BNC_utterances.txt")
+    #corpus = get_bnc_utterances("data/BNC_XML/Texts/")
+    #write_file(corpus, "BNC_utterances.txt")
+    pass
 
