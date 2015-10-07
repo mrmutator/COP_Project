@@ -46,8 +46,8 @@ def write_file(corpus, outfile_name):
         outfile.write(tag + "\t" + " ".join(utt_tokens) + "\n")
     outfile.close()
 
-def get_swda_utterances_from_file(swda_file):
-    infile = codecs.open(swda_file, "r", "utf-8")
+def get_utterances_from_file(file_name):
+    infile = codecs.open(file_name, "r", "utf-8")
     for line in infile:
         tag, utt = line.strip().split("\t")
         yield tag, utt.split()
