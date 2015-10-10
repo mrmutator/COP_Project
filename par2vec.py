@@ -29,9 +29,9 @@ if __name__ == "__main__":
 
     utterance_tag_set = []
     utterances = dict()
-    for i, (tag, utt_tokens) in enumerate(get_utterances_from_file("data/swda_utterances.txt")):
-        utterance_tag_set.append(TaggedDocument(utt_tokens, [unicode(tag + '_%s' % i)]))
-        utterances[unicode(tag + "_%s"%i)] = " ".join(utt_tokens)
+    for tag, utt_tokens in get_utterances_from_file("data/swda_utterances.txt"):
+        utterance_tag_set.append(TaggedDocument(utt_tokens, [unicode(tag )]))
+        utterances[unicode(tag)] = " ".join(utt_tokens)
 
     # for tag, utt_tokens in get_utterances_from_file("data/SB_utterances.txt"):
     #     utterance_tag_set.append(TaggedDocument(utt_tokens, [unicode(tag)]))

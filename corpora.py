@@ -10,12 +10,15 @@ from lxml import etree as ET
 
 def get_swda_utterances(swda_dir):
     corpus = CorpusReader(swda_dir)
+    c = 0
 
     for trans in  corpus.iter_transcripts(display_progress=True):
             for utt in trans.utterances:
-                utt_tokens =  word_tokenize(re.sub(r'\{.+? |\}|\[|\]|\+|#|/|<.+?>', "", utt.text.lower()))
+                utt_temp = re.sub(r'\(|\)|-|\{.+? |\}|\[|\]|\+|#|/|<.+?>', "", utt.text.lower())
+                utt_tokens = word_tokenize(re.sub("<|>", "", utt_temp))
                 if utt_tokens:
-                    yield utt.damsl_act_tag(), utt_tokens
+                    yield utt.damsl_act_tag() + "/%s" % c, utt_tokens
+                    c += 1
 
 def get_SB_utterances(SB_dir):
     for f in glob.glob(SB_dir + "/*.trn"):
@@ -76,8 +79,8 @@ if __name__ == "__main__":
     corpus = get_swda_utterances("data/swda")
     write_file(corpus, "data/swda_file.txt")
 
-    corpus = get_SB_utterances("data/SB")
-    write_file(corpus, "SB_utterances.txt")
+    # corpus = get_SB_utterances("data/SB")
+    # write_file(corpus, "data/SB_utterances.txt")
 
     corpus = get_bnc_utterances("data/BNC_XML/Texts")
     write_file(corpus, "data/BNC_utterances.txt")

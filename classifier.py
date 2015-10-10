@@ -11,6 +11,8 @@ X_tokens = []
 Y_tags = []
 for tag, tokens in get_swda_utterances_from_file("data/swda_file.txt"):
     X_tokens.append(" ".join(tokens))
+    # remove id from tag
+    tag = tag.split("/")[0]
     Y_tags.append(tag)
 
 vectorizer = CountVectorizer(min_df=1)
