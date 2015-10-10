@@ -85,6 +85,9 @@ if __name__=='__main__':
     # SVM_score = SVM_classifier(X_train, Y_train, X_test, Y_test)
     KNN_score = KNN_classifier(X_train, Y_train, X_test, Y_test)
 
+    print 'NB test set score ', NB_score
+    print 'KNN test set score: ', KNN_score
+
 # predicted =  model.predict(X_test)
 # true = le.inverse_transform(Y_test)
 # for i, pred in enumerate(le.inverse_transform(predicted)):
