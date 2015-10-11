@@ -6,19 +6,18 @@ import re
 import codecs
 import os
 from lxml import etree as ET
+import random
 
 
 def get_swda_utterances(swda_dir):
     corpus = CorpusReader(swda_dir)
-    c = 0
 
     for trans in  corpus.iter_transcripts(display_progress=True):
             for utt in trans.utterances:
                 utt_temp = re.sub(r'\(|\)|-|\{.+? |\}|\[|\]|\+|#|/|<.+?>', "", utt.text.lower())
                 utt_tokens = word_tokenize(re.sub("<|>", "", utt_temp))
                 if utt_tokens:
-                    yield utt.damsl_act_tag() + "/%s" % c, utt_tokens
-                    c += 1
+                    yield utt.damsl_act_tag() + "/%s_%s" % (utt.conversation_no, utt.caller), utt_tokens
 
 def get_SB_utterances(SB_dir):
     for f in glob.glob(SB_dir + "/*.trn"):
@@ -72,16 +71,38 @@ def get_bnc_utterances(bnc_dir):
 
 
 
+def write_train_test_files(corpus, transcript_number_file, number_of_test_transcripts, test_file_name, train_file_name):
+    transcript_number_file = open(transcript_number_file, "r")
+    transcript_numbers = transcript_number_file.readlines()
+    transcript_number_file.close()
+    transcript_numbers = map(int, (map(str.strip, transcript_numbers)))
+    test_set_transcripts = random.sample(transcript_numbers, number_of_test_transcripts)
+
+    outfile_test = codecs.open(test_file_name, "w", "utf-8")
+    outfile_train = codecs.open(train_file_name, "w", "utf-8")
+    test_tags = set()
+    for tag, utt_tokens in corpus:
+        if int(tag.split("/")[-1].split("_")[0]) in test_set_transcripts:
+            outfile_test.write(tag + "\t" + " ".join(utt_tokens) + "\n")
+            test_tags.add(tag.split("/")[0])
+        else:
+            outfile_train.write(tag + "\t" + " ".join(utt_tokens) + "\n")
+
+    outfile_train.close()
+    outfile_test.close()
+    print "tags in test set: ", len(test_tags)
+
 
 
 if __name__ == "__main__":
     # write preprocessed utterances files to speed up further processing
     corpus = get_swda_utterances("data/swda")
-    write_file(corpus, "data/swda_file.txt")
+    write_file(corpus, "data/swda_utterances.txt")
+    #write_train_test_files(corpus, "data/transcripts.txt", 19, "test", "train")
 
     # corpus = get_SB_utterances("data/SB")
     # write_file(corpus, "data/SB_utterances.txt")
 
-    corpus = get_bnc_utterances("data/BNC_XML/Texts")
-    write_file(corpus, "data/BNC_utterances.txt")
+    # corpus = get_bnc_utterances("data/BNC_XML/Texts")
+    # write_file(corpus, "data/BNC_utterances.txt")
 
