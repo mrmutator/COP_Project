@@ -104,17 +104,7 @@ def bow_representation(train_utt, test_utt):
 
 	return train_X, test_X
 
-if __name__ == '__main__':
-	data_location = "data/swda"
-	# list of ids that are in the test set, maybe should load from file
-	test_ids = [2175,2053, 3360, 3389, 3926, 4078, 3054, 3852, 2708, 2121, 2562, 3745, 3254, 2455, 2749, 2330, 3207, 2505, 3495] 
-
-	# load training and test data
-	train_utt, train_Y, test_utt, test_Y = load_data(data_location, test_ids)
-
-	# encode tags
-	train_Y, test_Y = encode_tags(train_Y, test_Y)
-
+def baseline_scores(train_utt, train_Y, test_utt, test_Y ):
 	print "Calculating baseline BOW scores"
 	# Baseline scores, use BOW representation of utterances
 	train_X, test_X = bow_representation(train_utt, test_utt)
@@ -127,6 +117,20 @@ if __name__ == '__main__':
 	print "SVM Accuracy: ", svm_score
 	print "NB Accuracy: ", nb_score
 	print "Creating representations"
+
+if __name__ == '__main__':
+	data_location = "data/swda"
+	# list of ids that are in the test set, maybe should load from file
+	test_ids = [2175,2053, 3360, 3389, 3926, 4078, 3054, 3852, 2708, 2121, 2562, 3745, 3254, 2455, 2749, 2330, 3207, 2505, 3495] 
+
+	# load training and test data
+	train_utt, train_Y, test_utt, test_Y = load_data(data_location, test_ids)
+
+	# encode tags
+	train_Y, test_Y = encode_tags(train_Y, test_Y)
+
+	# uncomment this to find basline scores
+	# baseline_scores(train_utt, train_Y, test_utt, test_Y)
 
 	# Load utterance embedding models
 	embedding_model_location = "data/test" #location of the embeddings
