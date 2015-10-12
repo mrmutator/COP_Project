@@ -71,7 +71,7 @@ def represent_random(train_utt, test_utt):
 	return train_X, test_X
 
 def represent_simple(train_utt, test_utt, model):   	
-	# this represents every utterance as it's own embedding
+	# this represents every utterance as it's own embedding this should be extended to encorporate some context
 	train_X = []
 	test_X = []
 	i = 0
@@ -116,7 +116,7 @@ def baseline_scores(train_utt, train_Y, test_utt, test_Y ):
 	print "KNN Accuracy: ", knn_score
 	print "SVM Accuracy: ", svm_score
 	print "NB Accuracy: ", nb_score
-	print "Creating representations"
+
 
 if __name__ == '__main__':
 	data_location = "data/swda"
@@ -132,10 +132,11 @@ if __name__ == '__main__':
 	# uncomment this to find basline scores
 	# baseline_scores(train_utt, train_Y, test_utt, test_Y)
 
+	print "Creating representations"
 	# Load utterance embedding models
 	embedding_model_location = "data/test" #location of the embeddings
-
 	embedding_model, _ = load_all_models(embedding_model_location)
+
 	# represent utterances in some way, 
 	train_X, test_X = represent_simple(train_utt, test_utt, embedding_model)
 	
