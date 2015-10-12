@@ -22,3 +22,11 @@
 *.mtc1
 *.out
 *.synctex.gz
+
+*.pyc
+
+data/swda/*
+*.gz
+*.npy
+*.utt
+*.model
