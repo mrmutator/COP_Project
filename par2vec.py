@@ -24,33 +24,25 @@ def load_all_models(file_name):
     return model, utterances
 
 
-
-if __name__ == "__main__":
-
+def train_model(train_corpus_file, output_file_name, min_count=1, window=10, size=300, sample=1e-4, negative=5, workers=4, alpha=0.025,
+                min_alpha = 0.001, passes=10, w2v_intersect=None):
     utterance_tag_set = []
     utterances = dict()
-    for tag, utt_tokens in get_utterances_from_file("data/swda_utterances.txt"):
+    for tag, utt_tokens in get_utterances_from_file(train_corpus_file):
         utterance_tag_set.append(TaggedDocument(utt_tokens, [unicode(tag )]))
         utterances[unicode(tag)] = " ".join(utt_tokens)
 
-    # for tag, utt_tokens in get_utterances_from_file("data/SB_utterances.txt"):
-    #     utterance_tag_set.append(TaggedDocument(utt_tokens, [unicode(tag)]))
-    #     utterances[unicode(tag)] = " ".join(utt_tokens)
 
-    for tag, utt_tokens in get_utterances_from_file("data/BNC_utterances.txt"):
-        utterance_tag_set.append(TaggedDocument(utt_tokens, [unicode(tag)]))
-        utterances[unicode(tag)] = " ".join(utt_tokens)
+    print "Training size:", len(utterances)
 
-    print len(utterances)
-
-    model = Doc2Vec(min_count=1, window=10, size=300, sample=1e-4, negative=5, workers=4)
+    model = Doc2Vec(min_count=min_count, window=window, size=size, sample=sample, negative=negative, workers=workers)
     model.build_vocab(utterance_tag_set)
 
     # use pretrained word2vec model to initialize word parameters
-    model.intersect_word2vec_format("data/GoogleNews-vectors-negative300.bin.gz", binary=True)
+    if w2v_intersect:
+        model.intersect_word2vec_format(w2v_intersect, binary=True)
 
 
-    alpha, min_alpha, passes = (0.025, 0.001, 10)
     alpha_delta = (alpha - min_alpha) / passes
     for epoch in range(passes):
         print "Epoch: ", epoch
@@ -60,13 +52,20 @@ if __name__ == "__main__":
         alpha -= alpha_delta
 
 
-    save_all_models(model, utterances, "data/test")
+    save_all_models(model, utterances, output_file_name)
+
+
+if __name__ == "__main__":
+
+    train_model("data/swda_utterances.train", "models/test")
+
+
 
     #model, utterances = load_all_models("data/test")
 
-    get_similar_utterances("thank you", model, utterances)
-
-    get_similar_utterances("I live in Amsterdam .", model, utterances)
+    # get_similar_utterances("thank you", model, utterances)
+    #
+    # get_similar_utterances("I live in Amsterdam .", model, utterances)
 
 
 
