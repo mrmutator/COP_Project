@@ -6,7 +6,8 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn import preprocessing
 from sklearn.cross_validation import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
-
+from sknn import mlp
+import numpy as np
 
 def NB_classifier(X_train, Y_train, X_test, Y_test):
     model = naive_bayes.BernoulliNB()
@@ -28,6 +29,14 @@ def KNN_classifier(X_train, Y_train, X_test, Y_test):
     KNN_model = KNeighborsClassifier(n_neighbors=5)
     KNN_model.fit(X_train,Y_train)
     score = KNN_model.score(X_test,Y_test)
+
+    return score
+
+def MLP_classifier(X_train, Y_train, X_test, Y_test):
+
+    nn = mlp.Classifier(layers=[mlp.Layer("Sigmoid", units=100), mlp.Layer("Softmax")], learning_rate=0.001, n_iter=25)
+    nn.fit(np.array(X_train), np.array(Y_train))
+    score = nn.score(np.array(X_test), np.array(Y_test))
 
     return score
 
