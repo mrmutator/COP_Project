@@ -25,7 +25,7 @@ def load_all_models(file_name):
 
 
 def train_model(train_corpus_file, output_file_name, min_count=1, window=10, size=300, sample=1e-4, negative=5, workers=4, alpha=0.025,
-                min_alpha = 0.001, passes=10, w2v_intersect=None):
+                min_alpha = 0.001, epochs=10, w2v_intersect=None):
     utterance_tag_set = []
     utterances = dict()
     for tag, utt_tokens in get_utterances_from_file(train_corpus_file):
@@ -43,8 +43,8 @@ def train_model(train_corpus_file, output_file_name, min_count=1, window=10, siz
         model.intersect_word2vec_format(w2v_intersect, binary=True)
 
 
-    alpha_delta = (alpha - min_alpha) / passes
-    for epoch in range(passes):
+    alpha_delta = (alpha - min_alpha) / epochs
+    for epoch in range(epochs):
         print "Epoch: ", epoch
         random.shuffle(utterance_tag_set)
         model.alpha, model.min_alpha = alpha, alpha
@@ -55,17 +55,21 @@ def train_model(train_corpus_file, output_file_name, min_count=1, window=10, siz
     save_all_models(model, utterances, output_file_name)
 
 
+def test_model(model_name):
+    model, utterances = load_all_models(model_name)
+
+    get_similar_utterances("thank you", model, utterances)
+
+    get_similar_utterances("I live in Amsterdam .", model, utterances)
+
+
 if __name__ == "__main__":
 
-    train_model("data/swda_utterances.train", "models/test")
+    train_model("data/swda_bnc_utterances.train", "models/swda_bnc_noint_50_300", epochs=50)
 
 
 
-    #model, utterances = load_all_models("data/test")
 
-    # get_similar_utterances("thank you", model, utterances)
-    #
-    # get_similar_utterances("I live in Amsterdam .", model, utterances)
 
 
 
