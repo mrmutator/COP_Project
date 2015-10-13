@@ -18,7 +18,7 @@ def NB_classifier(X_train, Y_train, X_test, Y_test):
 
 def SVM_classifier(X_train, Y_train, X_test, Y_test):
     SVM_model = svm.SVC(probability=False, kernel='rbf', C=1.0)
-    SVM_model.fit(X_train,Y_train)
+    SVM_model.fit(X_train, Y_train)
     score = SVM_model.score(X_test, Y_test)
 
     return score
