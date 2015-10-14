@@ -11,13 +11,14 @@ import random
 
 def get_swda_utterances(swda_dir):
     corpus = CorpusReader(swda_dir)
-
+    c = 0
     for trans in  corpus.iter_transcripts(display_progress=True):
             for utt in trans.utterances:
                 utt_temp = re.sub(r'\(|\)|-|\{.+? |\}|\[|\]|\+|#|/|<.+?>', "", utt.text.lower())
                 utt_tokens = word_tokenize(re.sub("<|>", "", utt_temp))
                 if utt_tokens:
-                    yield utt.damsl_act_tag() + "/%s_%s" % (utt.conversation_no, utt.caller), utt_tokens
+                    yield utt.damsl_act_tag() + "/%s_%s_%s" % (utt.conversation_no, utt.caller, c), utt_tokens
+                    c += 1
 
 def get_SB_utterances(SB_dir):
     for f in glob.glob(SB_dir + "/*.trn"):
@@ -97,8 +98,9 @@ def write_train_test_files(corpus, transcript_number_file, number_of_test_transc
 if __name__ == "__main__":
     # write preprocessed utterances files to speed up further processing
     corpus = get_swda_utterances("data/swda")
-    write_file(corpus, "data/swda_utterances.txt")
-    #write_train_test_files(corpus, "data/transcripts.txt", 19, "test", "train")
+    # corpus = get_utterances_from_file("data/swda_utterances.txt")
+    #write_file(corpus, "data/swda_utterances.txt")
+    write_train_test_files(corpus, "data/transcripts.txt", 19, "test", "train")
 
     # corpus = get_SB_utterances("data/SB")
     # write_file(corpus, "data/SB_utterances.txt")
