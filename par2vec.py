@@ -65,7 +65,11 @@ def test_model(model_name):
 
 if __name__ == "__main__":
 
-    train_model("data/swda_bnc_utterances.train", "models/swda_bnc_noint_50_300", epochs=50)
+    # train different dimensions
+    for data_label, data in [("swda_only", "data/swda_utterances.train"), ("swda_bnc", "data/swda_bnc_utterances.train")]:
+        for dim in [100, 400, 500, 800, 1000]:
+            print data_label, dim
+            train_model(data, "models/" + data_label + "_10" + "_" + str(dim), epochs=10, size=dim)
 
 
 
