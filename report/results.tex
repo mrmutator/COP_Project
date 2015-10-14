@@ -4,3 +4,19 @@
 	\item \david{we could also put the methodology here and focus the last section on utterance embeddings?}
 	\item ...
 \end{itemize}
+
+Utterance embeddings have the property of encapsulating the meaning of utterances from the words that compose them; as with the case of word embeddings, these representations present appealing relations from which similar words (in a semantic sense) appear close by in the high dimension space. We being by extracting samples from the SwDA corpus belonging to clear unrelated tags, and applying dimensionality reduction to their vector representations and plotting the results in 2 and 3 dimensions. The sampled utterances belong to the following categories: \emph{Wh-questions}, \emph{Thanking}, \emph{Reject}, and \emph{Apology}. Considering the words that are used in these kind of units, sample points should be clearly separated. The utterance embeddings were extracted using a 300-dimensional model trained on the SwDA corpus interjected with Google pretrained vectors. Figure~\ref{fig:2d_pca} and Figure~\ref{fig:3d_pca} show scatter diagrams of the utterance embeddings after applying PCA.
+
+\begin{figure}
+\centering
+\begin{minipage}{.23\textwidth}
+\includegraphics[width=1\textwidth]{img/pca_2d}
+\caption{2D PCA.}
+\label{fig:2d_pca}
+\end{minipage}
+\begin{minipage}{.23\textwidth}
+\includegraphics[width=1\textwidth]{img/pca_3d}
+\caption{2D PCA.}
+\label{fig:3d_pca}
+\end{minipage}
+\end{figure}
