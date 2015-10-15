@@ -1,15 +1,64 @@
-\input{preamble}
+%
+% File acl2015.tex
+%
+% Contact: car@ir.hit.edu.cn, gdzhou@suda.edu.cn
+%%
+%% Based on the style files for ACL-2014, which were, in turn,
+%% Based on the style files for ACL-2013, which were, in turn,
+%% Based on the style files for ACL-2012, which were, in turn,
+%% based on the style files for ACL-2011, which were, in turn, 
+%% based on the style files for ACL-2010, which were, in turn, 
+%% based on the style files for ACL-IJCNLP-2009, which were, in turn,
+%% based on the style files for EACL-2009 and IJCNLP-2008...
 
-\numberofauthors{3}
-\author{\alignauthor Lautaro Quiroz \email{10849963}
-\alignauthor Roger Wechsler \email{10850007} \and
-\alignauthor David Woudenberg \email{10069143}}
+%% Based on the style files for EACL 2006 by 
+%%e.agirre@ehu.es or Sergi.Balari@uab.es
+%% and that of ACL 08 by Joakim Nivre and Noah Smith
+
+\documentclass[11pt]{article}
+\usepackage{acl2015}
+\usepackage{times}
+\usepackage{url}
+\usepackage{latexsym}
+\usepackage{graphicx}
+\usepackage{color}
+
+\definecolor{darkgreen}{rgb}{0,0.5,0}
+\definecolor{darkred}{rgb}{0.7,0,0}
+\definecolor{darkblue}{rgb}{0.1,0,0.7}
+\definecolor{teal}{rgb}{0.2,0.6,0.6}
+\definecolor{strawberry}{rgb}{1.0,0.2,0.2}
+\definecolor{pinkerry}{rgb}{1.0,0.6,1.0}
+
+
+\newcommand{\david}[1]{\textcolor{darkblue}{[DW: #1]}}
+\newcommand{\roger}[1]{\textcolor{darkred}{[RW: #1]}}
+\newcommand{\lau}[1]{\textcolor{darkblue}{[LQ: #1]}}
+
+%\setlength\titlebox{5cm}
+
+% You can expand the titlebox if you need extra space
+% to show all the authors. Please do not make the titlebox
+% smaller than 5cm (the original size); we will check this
+% in the camera-ready version and ask you to change it back.
+
 
 \title{Computational Pragmatics \\ Project: Utterance2Vec}
 
-\begin{document}
+\author{Lautaro Quiroz \\
+  10849963\\\And
+  Roger Wechsler\\
+  10850007\\\And
+  David Woudenberg\\
+  10069143\\}
 
+
+
+\date{}
+
+\begin{document}
 \maketitle
+
 
 \input{abstract}
 \input{introduction}
@@ -18,11 +67,16 @@
 \input{results}
 \input{discussion}
 
-\providecommand{\bibfont}{\small}
-\setlength{\bibsep}{.5pt}
-\bibliographystyle{abbrvnat}
-\raggedright{
+
+
+
+%\section*{Acknowledgments}
+%
+%The acknowledgments should go immediately before the references.  Do
+%not number the acknowledgments section. Do not include this section
+%when submitting your paper for review.
+
+\bibliographystyle{acl}
 \bibliography{references}
-}
 
 \end{document}
