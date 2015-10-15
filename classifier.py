@@ -32,9 +32,9 @@ def KNN_classifier(X_train, Y_train, X_test, Y_test):
 
     return score
 
-def MLP_classifier(X_train, Y_train, X_test, Y_test):
+def MLP_classifier(X_train, Y_train, X_test, Y_test, n_iter=25):
 
-    nn = mlp.Classifier(layers=[mlp.Layer("Sigmoid", units=100), mlp.Layer("Softmax")], learning_rate=0.001, n_iter=25)
+    nn = mlp.Classifier(layers=[mlp.Layer("Sigmoid", units=100), mlp.Layer("Softmax")], learning_rate=0.001, n_iter=n_iter)
     nn.fit(np.array(X_train), np.array(Y_train))
     score = nn.score(np.array(X_test), np.array(Y_test))
 

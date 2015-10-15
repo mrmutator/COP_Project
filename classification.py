@@ -15,19 +15,17 @@ def load_data():
     test_Y = []
     for tag, tokens in get_utterances_from_file("data/swda_utterances.train"):
         train_utt.append(" ".join(tokens))
-        # remove id from tag
-        tag = tag.split("/")[0]
         train_Y.append(tag)
     for tag, tokens in get_utterances_from_file("data/swda_utterances.test"):
         test_utt.append(" ".join(tokens))
-        # remove id from tag
-        tag = tag.split("/")[0]
         test_Y.append(tag)
 
     return train_utt, train_Y, test_utt, test_Y
 
 
 def encode_tags(train_Y, test_Y):
+    train_Y = [t.split("/")[0] for t in train_Y]
+    test_Y = [t.split("/")[0] for t in test_Y]
     le = preprocessing.LabelEncoder()
     le.fit(train_Y + test_Y)
 
@@ -59,25 +57,31 @@ def represent_random(train_utt, test_utt):
     return train_X, test_X
 
 
-def represent_simple(train_utt, test_utt, model):
+def represent_simple(utterances, model):
     # this represents every utterance as it's own embedding this should be extended to encorporate some context
-    train_X = []
-    test_X = []
+    X = []
     i = 0
-    for utt in test_utt:
-        test_X.append(model.infer_vector(utt.split()))
-        sys.stderr.write("\r");
-        sys.stderr.write("utterance %s" % i);
-        sys.stderr.flush();
-        i += 1
-    for utt in train_utt:
-        train_X.append(model.infer_vector(utt.split()))
+    for utt in utterances:
+        X.append(model.infer_vector(utt.split()))
         sys.stderr.write("\r");
         sys.stderr.write("utterance %s" % i);
         sys.stderr.flush();
         i += 1
     sys.stderr.write("\n")
-    return train_X, test_X
+    return X
+
+def represent_lookup(labels, model):
+    # this represents every utterance as it's own embedding this should be extended to encorporate some context
+    X = []
+    i = 0
+    for label in labels:
+        X.append(model.docvecs[label])
+        sys.stderr.write("\r");
+        sys.stderr.write("utterance %s" % i);
+        sys.stderr.flush();
+        i += 1
+    sys.stderr.write("\n")
+    return X
 
 
 def bow_representation(train_utt, test_utt):
@@ -100,28 +104,38 @@ def baseline_scores(train_utt, train_Y, test_utt, test_Y):
     # print "SVM Accuracy: ", cl.SVM_classifier(train_X, train_Y, test_X, test_Y)
     print "NB Accuracy: ", cl.NB_classifier(train_X, train_Y, test_X, test_Y)
 
-
-if __name__ == '__main__':
+def evaluate_model(embedding_model_location):
     # load training and test data
     train_utt, train_Y, test_utt, test_Y = load_data()
-    # encode tags
-    train_Y, test_Y = encode_tags(train_Y, test_Y)
 
     # uncomment this to find basline scores
     # baseline_scores(train_utt, train_Y, test_utt, test_Y)
 
     print "Creating representations"
     # Load utterance embedding models
-    embedding_model_location = "data/only_train_swda"  # location of the embeddings
     embedding_model, _ = load_all_models(embedding_model_location)
 
     # represent utterances in some way,
-    train_X, test_X = represent_simple(train_utt, test_utt, embedding_model)
+    # train_X = represent_simple(train_utt, embedding_model)
+    # test_X = represent_simple(test_utt, embedding_model)
+
+    train_X = represent_lookup(train_Y, embedding_model)
+    test_X = represent_simple(test_utt, embedding_model)
+
+
+    # encode tags
+    train_Y, test_Y = encode_tags(train_Y, test_Y)
 
     # print np.array(train_X).shape, np.array(test_X).shape, np.array(train_Y).shape, np.array(test_Y).shape
     print "Training classifiers"
     # Train classifiers, print scores
-print "MLP Accuracy: ", cl.MLP_classifier(train_X, train_Y, test_X, test_Y)
-print "KNN Accuracy: ", cl.KNN_classifier(train_X, train_Y, test_X, test_Y)
-# print "SVM Accuracy: ", cl.SVM_classifier(train_X, train_Y, test_X, test_Y)
-print "NB Accuracy: ", cl.NB_classifier(train_X, train_Y, test_X, test_Y)
+    print "Model: ", embedding_model_location
+    print "MLP Accuracy: ", cl.MLP_classifier(train_X, train_Y, test_X, test_Y, n_iter=10)
+    print "KNN Accuracy: ", cl.KNN_classifier(train_X, train_Y, test_X, test_Y)
+    # print "SVM Accuracy: ", cl.SVM_classifier(train_X, train_Y, test_X, test_Y)
+    print "NB Accuracy: ", cl.NB_classifier(train_X, train_Y, test_X, test_Y)
+
+
+if __name__ == '__main__':
+    evaluate_model("data/swda_only")
+
