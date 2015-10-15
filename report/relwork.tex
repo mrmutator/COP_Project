@@ -1,8 +1,12 @@
 \section{Related Work}\label{sec:relwork}
-Several approaches have been made for classifying dialog acts. Most of them rely on supervised trained models, and use hand crafted features extracted for all utterances. \lau{is this true?} We briefly present some of the most relevant work in this section.
-\begin{itemize}
-	\item Some classic ways of dialog act tagging
-	\item Introduce distributional representations
-	\item Some works that combine the two
-	\item ...
-\end{itemize}
+Several approaches have been proposed for classifying dialog acts. Most of them rely on supervised trained models, and use hand crafted features extracted for all utterances. \lau{is this true?} Some recent work shows that using distributional representations for dialog act classification outperforms these methods. We briefly present some of the most relevant work in this section.
+
+The authors of \cite{stolcke2000} predict dialog acts by modeling a conversation as a hidden Markov model. A sequence of dialog acts is represented as a \emph{discourse model} where the probability of the next dialog act depends on the \emph{n} previous dialog acts. They integrate this model with a \emph{language model} for each separate dialog act, which computes the possibility of the occurrence of all \emph{word n-grams} in an utterance given a certain dialog act tag. In \cite{stolcke2000} models are also trained on the actual speech signals, where the `language model' is trained on prosodic and acoustic evidence. When considering the models trained on the dialog transcripts we can see that in this an utterance is represented as a bag of n-grams. We will try to find a representation that captures the composition of an utterance in a better way.
+
+\david{Explaining \cite{le2014distributed} might be nice HERE? or maybe before \cite{stolcke2000} in a separate subsection?}
+
+In \cite{kalchbrenner} a Recurrent Convolutional Neural Network (RCNN) is trained in a supervised manner on a corpus, which achieves state of the art results on the dialog act tagging task. The RCNN learns both a \emph{discourse model} and a \emph{sentence model} from a specific corpus, where the utterance representation is derived from individual word vectors, which are chosen randomly. We feel that this representation can become a lot richer if it is learned as in \cite{le2014distributed}, where word vectors have some distributional meaning. Another strength of this approach is that it is possible to train these utterance embeddings in an unsupervised manner, making it possible to additional, possibly unannotated, corpora. 
+
+An investigation on the contribution of distributional semantic information to the dialog act tagging task was conducted in \cite{milajevs}. It was found that such information did improve tagging when compared to simple bag of words approaches. However only very simple distributional representations were investigated in this research, words were represented as a vector of their co-occurrences. Utterances as point wise multiplications or additions of these vectors, which implicates the loss of any compositional features. The work of \cite{milajevs} was not able to outperform the earlier work on dialog act tagging presented before. 
+
+\david{We need to explicitly state how we differ from all this previous work}
