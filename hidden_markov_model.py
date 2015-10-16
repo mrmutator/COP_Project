@@ -34,7 +34,7 @@ def viterbi_decoder(sequence,speakers, start_prob, transition_matrix, model, ord
 	if model == None:
 		emmision_probs1 = np.ones(number_of_states)/float(number_of_states) # This should come from the model, just for testing
 	else:
-		emmision_probs1 = model.predict_probs(sequence[0])
+		emmision_probs1 = model#.predict_probs(sequence[0])
 
 
 	T_1 = np.zeros((number_of_states, len(sequence)))
@@ -48,7 +48,7 @@ def viterbi_decoder(sequence,speakers, start_prob, transition_matrix, model, ord
 		if model == None:
 			emmision_probsi = np.ones(number_of_states)/float(number_of_states)
 		else:
-			emmision_probsi = model.predict_probs(sequence[i])
+			emmision_probsi = model#.predict_probs(sequence[i])
 		for j in range(number_of_states):
 			speaker_tuple = tuple([speakers[i] == utt for utt in utterers])
 			state_lists = [state for state in transition_matrix.iterkeys() if state[1] == speaker_tuple]

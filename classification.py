@@ -6,6 +6,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 import hidden_markov_model as hmm
 import numpy as np
 import sys
+from itertools import groupby
 
 
 def load_data_hmm():
@@ -175,6 +176,7 @@ def classify_context_dependent():
         # utterances with corresponding DA tags for language model
     # testing:
         # sequences of utterances with corresponding speakers and DA tags (for evaluation)
+    print "Loading Data"
     train_dialogs, test_dialogs =  load_data_hmm()
     
     
@@ -187,13 +189,17 @@ def classify_context_dependent():
             all_tags.append(tag.split('/')[0])
             i += 1
     le = preprocessing.LabelEncoder()
-    le.fit(all_tags)
-    print len(set(all_tags))
+    transformed_tags = le.fit_transform(all_tags)
 
+    # This is not the way to do it
+    emmision_probabilites = np.array([len(list(group)) for key, group in groupby(sorted(transformed_tags))])/float(len(transformed_tags))
+
+
+    print "Loading sentence model"
     # train/load 'language model'
     # load a doc2vec model to train the language model with
     # model = None will give a uniform chance for each tag and utterance
-    model = None
+    model = emmision_probabilites
 
 
     # learn transition matrix
@@ -202,10 +208,11 @@ def classify_context_dependent():
     for dialog in train_dialogs:
         speaker_sequences.append([tag[0].split('/')[1].split('_')[1] for tag in dialog])
         tag_sequences.append(le.transform([tag[0].split('/')[0] for tag in dialog]))
-    start_prob, transition_matrix = hmm.learn_transition_matrix(tag_sequences, speaker_sequences, number_of_states = 43, order = 1)
+    print "Learning a Transitioin Matrix"
+    start_prob, transition_matrix = hmm.learn_transition_matrix(tag_sequences, speaker_sequences, number_of_states = 43, order = 2)
     # print start_prob, transition_matrix
 
-
+    print "Decoding"
     # evauluation:
     correct = 0
     total = 0
@@ -213,14 +220,13 @@ def classify_context_dependent():
         utterances = [words[1] for words in dialog] # this needs to be given the representation it needs in the language model
         true_tags = le.transform([tag[0].split('/')[0] for tag in dialog])
         speakers = [tag[0].split('/')[1].split('_')[1] for tag in dialog]
-        predicted = hmm.viterbi_decoder(utterances,speakers, start_prob, transition_matrix, model, order = 1)
+        predicted = hmm.viterbi_decoder(utterances,speakers, start_prob, transition_matrix,  model, order = 2)
         score = hmm.evaluate_sequence(predicted, true_tags)
         correct += score
-        total += len(speakers)
+        total += len(dialog)
     print float(correct)/total
         # for every testing dialog, decode with viterbi
     # calculate accuracy maybe confusion matrix
-    return True
 
 
 if __name__ == '__main__':
