@@ -31,8 +31,8 @@ def viterbi_decoder(sequence,speakers, start_prob, transition_matrix, model, ord
 	assert len(sequence) == len(speakers)
 	number_of_states = len(start_prob)
 	
-	if model = None:
-		emmision_probs1 = np.random.random(number_of_states) # This should come from the model, just for testing
+	if model == None:
+		emmision_probs1 = np.ones(number_of_states)/float(number_of_states) # This should come from the model, just for testing
 	else:
 		emmision_probs1 = model.predict_probs(sequence[0])
 
@@ -45,8 +45,8 @@ def viterbi_decoder(sequence,speakers, start_prob, transition_matrix, model, ord
 	utterers = utterers[1:] + (speakers[0],)
 
 	for i in range(1,len(sequence)):
-		if model = None:
-			emmision_probsi = np.random.random(number_of_states)
+		if model == None:
+			emmision_probsi = np.ones(number_of_states)/float(number_of_states)
 		else:
 			emmision_probsi = model.predict_probs(sequence[i])
 		for j in range(number_of_states):
@@ -69,6 +69,9 @@ def viterbi_decoder(sequence,speakers, start_prob, transition_matrix, model, ord
 
 	return most_likely_hidden
 
+def evaluate_sequence(predicted, true):
+	assert len(predicted) == len(true)
+	return sum(np.array([int(predicted[i]) == int(true[i]) for i in range(len(true))]))
 
 if __name__ == "__main__":
 	training_sequences = [[0,1,2,1,0,1],[1,2,0,1]]

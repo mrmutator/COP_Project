@@ -3,10 +3,43 @@ from par2vec import load_all_models
 from corpora import get_utterances_from_file
 from sklearn import preprocessing
 from sklearn.feature_extraction.text import CountVectorizer
-
+import hidden_markov_model as hmm
 import numpy as np
 import sys
 
+
+def load_data_hmm():
+    train_sequences = []
+    test_sequences = []
+
+    curr_sequence = []
+    first = True
+    for tag, tokens in get_utterances_from_file("data/swda_utterances.train"):
+        if first: 
+            cur_id = tag.split('/')[1].split('_')[0]
+            first = False
+        elif cur_id !=  tag.split('/')[1].split('_')[0]:
+            cur_id = tag.split('/')[1].split('_')[0]
+            train_sequences.append(curr_sequence)
+            curr_sequence = []
+        curr_sequence.append((tag, " ".join(tokens)))
+    train_sequences.append(curr_sequence)
+    curr_sequence = []
+    first = True
+
+    for tag, tokens in get_utterances_from_file("data/swda_utterances.test"):
+        if first: 
+            cur_id = tag.split('/')[1].split('_')[0]
+            first = False
+        elif cur_id !=  tag.split('/')[1].split('_')[0]:
+            cur_id = tag.split('/')[1].split('_')[0]
+            test_sequences.append(curr_sequence)
+            curr_sequence = []
+        curr_sequence.append((tag, " ".join(tokens)))
+    test_sequences.append(curr_sequence)
+    curr_sequence = []
+
+    return train_sequences, test_sequences
 
 def load_data():
     train_utt = []
@@ -135,7 +168,61 @@ def evaluate_model(embedding_model_location):
     # print "SVM Accuracy: ", cl.SVM_classifier(train_X, train_Y, test_X, test_Y)
     print "NB Accuracy: ", cl.NB_classifier(train_X, train_Y, test_X, test_Y)
 
+def classify_context_dependent():
+    # load data as:
+    # training:
+        # sequences of DA tags with corresponding speaker sequences for discourse model
+        # utterances with corresponding DA tags for language model
+    # testing:
+        # sequences of utterances with corresponding speakers and DA tags (for evaluation)
+    train_dialogs, test_dialogs =  load_data_hmm()
+    
+    
+
+    # train a label encoder
+    all_tags = []
+    i = 0
+    for dialog in train_dialogs+test_dialogs:
+        for tag, utterance in dialog:
+            all_tags.append(tag.split('/')[0])
+            i += 1
+    le = preprocessing.LabelEncoder()
+    le.fit(all_tags)
+    print len(set(all_tags))
+
+    # train/load 'language model'
+    # load a doc2vec model to train the language model with
+    # model = None will give a uniform chance for each tag and utterance
+    model = None
+
+
+    # learn transition matrix
+    speaker_sequences = []
+    tag_sequences = []
+    for dialog in train_dialogs:
+        speaker_sequences.append([tag[0].split('/')[1].split('_')[1] for tag in dialog])
+        tag_sequences.append(le.transform([tag[0].split('/')[0] for tag in dialog]))
+    start_prob, transition_matrix = hmm.learn_transition_matrix(tag_sequences, speaker_sequences, number_of_states = 43, order = 1)
+    # print start_prob, transition_matrix
+
+
+    # evauluation:
+    correct = 0
+    total = 0
+    for dialog in test_dialogs:
+        utterances = [words[1] for words in dialog] # this needs to be given the representation it needs in the language model
+        true_tags = le.transform([tag[0].split('/')[0] for tag in dialog])
+        speakers = [tag[0].split('/')[1].split('_')[1] for tag in dialog]
+        predicted = hmm.viterbi_decoder(utterances,speakers, start_prob, transition_matrix, model, order = 1)
+        score = hmm.evaluate_sequence(predicted, true_tags)
+        correct += score
+        total += len(speakers)
+    print float(correct)/total
+        # for every testing dialog, decode with viterbi
+    # calculate accuracy maybe confusion matrix
+    return True
+
 
 if __name__ == '__main__':
-    evaluate_model("data/swda_only")
+    classify_context_dependent()
 
