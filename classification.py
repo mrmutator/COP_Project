@@ -7,6 +7,8 @@ import hidden_markov_model as hmm
 import numpy as np
 import sys
 from itertools import groupby
+from operator import add
+from operator import concat
 
 
 def load_data_hmm():
@@ -117,6 +119,58 @@ def represent_lookup(labels, model):
     sys.stderr.write("\n")
     return X
 
+def e_add(utt1,utt2):
+    return map(add, utt1, utt2)
+
+def represent_mix_simple(utterances, model, op):
+    '''
+    incorporates previous utterance with operator param.
+    retrieves utterance representations via inference
+    :param labels:
+    :param model:
+    :return:
+    '''
+    # this represents every utterance as it's own embedding this should be extended to encorporate some context
+    X = []
+    for j, utt in enumerate(utterances):
+        actual_utt = list(model.infer_vector(utt.split()))
+        if j == 0:
+            mixed_rep = op(actual_utt,actual_utt)
+        else:
+            prev_utt = list(model.infer_vector(utterances[j-1].split()))
+            mixed_rep = op(prev_utt,actual_utt)
+        X.append(mixed_rep)
+        sys.stderr.write("\r");
+        sys.stderr.write("utterance %s" % j);
+        sys.stderr.flush();
+    sys.stderr.write("\n")
+
+    return X
+
+def represent_mix_lookup(labels, model, op):
+    '''
+    incorporates previous utterance with operator param.
+    retrieves utterance representations via lookup
+    :param labels:
+    :param model:
+    :return:
+    '''
+    X = []
+    for j, label in enumerate(labels):
+        actual_utt = list(model.docvecs[label][0][0])
+        if j == 0:
+            mixed_rep = op(actual_utt, actual_utt)
+        else:
+            prev_utt = list(model.docvecs[labels[j-1]][0][0])
+            mixed_rep = op(prev_utt, actual_utt)
+        X.append(mixed_rep)
+        sys.stderr.write("\r");
+        sys.stderr.write("utterance %s" % j);
+        sys.stderr.flush();
+    sys.stderr.write("\n")
+
+    return X
+
 
 def bow_representation(train_utt, test_utt):
     # how are we going to do some context representation here?
@@ -156,6 +210,12 @@ def evaluate_model(embedding_model_location):
     train_X = represent_lookup(train_Y, embedding_model)
     test_X = represent_simple(test_utt, embedding_model)
 
+    #---------- lqrz: add or concatenate the previous utterance
+    # f = concat
+    # f = e_add
+    # test_X = represent_mix_simple(test_utt, embedding_model, f) #TODO: delete
+    # train_X = represent_mix_lookup(train_Y, embedding_model, f) #TODO: delete
+    #----------
 
     # encode tags
     train_Y, test_Y = encode_tags(train_Y, test_Y)
@@ -164,10 +224,10 @@ def evaluate_model(embedding_model_location):
     print "Training classifiers"
     # Train classifiers, print scores
     print "Model: ", embedding_model_location
-    print "MLP Accuracy: ", cl.MLP_classifier(train_X, train_Y, test_X, test_Y, n_iter=10)
     print "KNN Accuracy: ", cl.KNN_classifier(train_X, train_Y, test_X, test_Y)
     # print "SVM Accuracy: ", cl.SVM_classifier(train_X, train_Y, test_X, test_Y)
     print "NB Accuracy: ", cl.NB_classifier(train_X, train_Y, test_X, test_Y)
+    print "MLP Accuracy: ", cl.MLP_classifier(train_X, train_Y, test_X, test_Y, n_iter=10)
 
 def classify_context_dependent():
     # load data as:
@@ -230,5 +290,6 @@ def classify_context_dependent():
 
 
 if __name__ == '__main__':
-    classify_context_dependent()
+    # classify_context_dependent()
 
+    evaluate_model('data/models/swda_s300_w8')
