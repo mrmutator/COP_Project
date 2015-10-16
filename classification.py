@@ -2,6 +2,7 @@ import classifier as cl
 from par2vec import load_all_models
 from corpora import get_utterances_from_file
 from sklearn import preprocessing
+from sklearn import naive_bayes
 from sklearn.feature_extraction.text import CountVectorizer
 import hidden_markov_model as hmm
 import numpy as np
@@ -239,7 +240,6 @@ def classify_context_dependent():
     print "Loading Data"
     train_dialogs, test_dialogs =  load_data_hmm()
     
-    
 
     # train a label encoder
     all_tags = []
@@ -253,13 +253,24 @@ def classify_context_dependent():
 
     # This is not the way to do it
     emmision_probabilites = np.array([len(list(group)) for key, group in groupby(sorted(transformed_tags))])/float(len(transformed_tags))
-
+    emmision_probability_matrix = np.vstack((emmision_probabilites,)*len(dialog)).T # for testing
 
     print "Loading sentence model"
     # train/load 'language model'
     # load a doc2vec model to train the language model with
-    # model = None will give a uniform chance for each tag and utterance
-    model = emmision_probabilites
+    vectorizer = CountVectorizer(min_df=1)
+    # fit + transform on all training data
+    train_utt =[]
+    train_Y = []
+    for dialog in train_dialogs:
+        for tag, utt in dialog:
+            train_utt.append(utt)
+            train_Y.append(tag.split('/')[0])
+    train_X = vectorizer.fit_transform(train_utt)   
+    model = naive_bayes.BernoulliNB()
+    model.fit(train_X, train_Y)
+
+
 
 
     # learn transition matrix
@@ -268,19 +279,33 @@ def classify_context_dependent():
     for dialog in train_dialogs:
         speaker_sequences.append([tag[0].split('/')[1].split('_')[1] for tag in dialog])
         tag_sequences.append(le.transform([tag[0].split('/')[0] for tag in dialog]))
-    print "Learning a Transitioin Matrix"
-    start_prob, transition_matrix = hmm.learn_transition_matrix(tag_sequences, speaker_sequences, number_of_states = 43, order = 2)
-    # print start_prob, transition_matrix
+    print "Learning a Transition Matrix"
+    start_prob, transition_matrix = hmm.learn_transition_matrix(tag_sequences, speaker_sequences, number_of_states = 43, order = 1)
+
 
     print "Decoding"
     # evauluation:
     correct = 0
     total = 0
+    probas = []
+    i = 0
     for dialog in test_dialogs:
-        utterances = [words[1] for words in dialog] # this needs to be given the representation it needs in the language model
+        print i
+        i += 1
+        for tag, utt in dialog:
+            rep = vectorizer.transform([utt]) # TODO This does something very weird
+            probas.append(model.predict_proba(rep))
+        # this needs to be given the representation it needs in the language model
+        # then we can use this with the predict_proba to calculate the emmision probability matrix
+
+        # emmision_probability_matrix = np.vstack((emmision_probabilites,)*len(dialog)).T # for testing
+        # print emmision_probability_matrix
+        emmision_probability_matrix = np.vstack(probas).T
+        # print emmision_probability_matrix
+
         true_tags = le.transform([tag[0].split('/')[0] for tag in dialog])
         speakers = [tag[0].split('/')[1].split('_')[1] for tag in dialog]
-        predicted = hmm.viterbi_decoder(utterances,speakers, start_prob, transition_matrix,  model, order = 2)
+        predicted = hmm.viterbi_decoder(speakers,speakers, start_prob, transition_matrix,  emmision_probability_matrix, order = 1)
         score = hmm.evaluate_sequence(predicted, true_tags)
         correct += score
         total += len(dialog)
