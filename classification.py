@@ -206,10 +206,7 @@ def classify_context_dependent():
         for tag, utt in dialog:
             train_utt.append(utt)
             train_Y.append(tag.split('/')[0])
-    train_X = vectorizer.fit_transform(train_utt)
-    print len(train_Y)
-    print train_X[0].shape
-    print train_X.shape
+    train_X = vectorizer.fit_transform(train_utt)   
     model = naive_bayes.BernoulliNB()
     model.fit(train_X, train_Y)
 
