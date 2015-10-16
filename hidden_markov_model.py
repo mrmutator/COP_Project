@@ -27,41 +27,36 @@ def learn_transition_matrix(training_sequences, speaker_sequences, number_of_sta
 			counter[key] /= float(total)
 	return start_prob, X_1
 
-def viterbi_decoder(sequence,speakers, start_prob, transition_matrix, model, order = 1):
+def viterbi_decoder(sequence,speakers, start_prob, transition_matrix, emmision_probs, order = 1):
 	assert len(sequence) == len(speakers)
 	number_of_states = len(start_prob)
 	
-	if model == None:
-		emmision_probs1 = np.ones(number_of_states)/float(number_of_states) # This should come from the model, just for testing
-	else:
-		emmision_probs1 = model#.predict_probs(sequence[0])
-
 
 	T_1 = np.zeros((number_of_states, len(sequence)))
 	T_2 = np.zeros((number_of_states, len(sequence)))
-	T_1[:,0] = np.multiply(emmision_probs1, start_prob)
+
+	T_1[:,0] = np.multiply(emmision_probs[:,0], start_prob)
 
 	utterers = (None,) * order
 	utterers = utterers[1:] + (speakers[0],)
-
+	n_Nones = order -1
 	for i in range(1,len(sequence)):
-		if model == None:
-			emmision_probsi = np.ones(number_of_states)/float(number_of_states)
-		else:
-			emmision_probsi = model#.predict_probs(sequence[i])
 		for j in range(number_of_states):
 			speaker_tuple = tuple([speakers[i] == utt for utt in utterers])
-			state_lists = [state for state in transition_matrix.iterkeys() if state[1] == speaker_tuple]
+			state_lists = [state for state in transition_matrix.iterkeys() if state[1] == speaker_tuple and state[0][:n_Nones] == (None,)*n_Nones]
+
 			maxk = None
 			maxval = None
 			for state in state_lists:
-				val = T_1[state[0][-1], i-1] *transition_matrix[state][j] *emmision_probsi[j]
+				val = T_1[state[0][-1], i-1] *transition_matrix[state][j] *emmision_probs[j,i]
 				if val > maxval:
 					maxval = val
 					maxk = state[0][-1]
 			T_1[j,i] = maxval
 			T_2[j,i] = maxk
 		utterers = utterers[1:] + (speakers[i],)
+		if n_Nones > 0:
+			n_Nones -= 1
 	most_likely_hidden = np.zeros(len(sequence))
 	most_likely_hidden[-1] = np.argmax(T_1[:,-1])
 	for i in range(1,len(sequence)):
@@ -74,7 +69,7 @@ def evaluate_sequence(predicted, true):
 	return sum(np.array([int(predicted[i]) == int(true[i]) for i in range(len(true))]))
 
 if __name__ == "__main__":
-	training_sequences = [[0,1,2,1,0,1],[1,2,0,1]]
-	speaker_sequences =  [["a","b","a","a","b","b"],["b","a","b","b"]]
+	training_sequences = [[0,1,2,1,1,0],[1,2,0,1]]
+	speaker_sequences =  [["a","a","b","a","b","b"],["b","a","b","b"]]
 	start_prob, transition_matrix = learn_transition_matrix(training_sequences, speaker_sequences,number_of_states = 3, order = 2)
-	print viterbi(["Hallo", "dit", "is" , "een", "test"],["a","a","b","a","a"], start_prob, transition_matrix, None, order = 2)
+	print viterbi_decoder(["Hallo", "dit", "is" , "een", "test"],["a","a","b","a","a"], start_prob, transition_matrix, None, order = 2)
