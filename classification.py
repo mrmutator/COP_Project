@@ -213,8 +213,8 @@ def evaluate_model(embedding_model_location):
     #---------- lqrz: add or concatenate the previous utterance
     # f = concat
     # f = e_add
-    # test_X = represent_mix_simple(test_utt, embedding_model, f) #TODO: delete
-    # train_X = represent_mix_lookup(train_Y, embedding_model, f) #TODO: delete
+    # test_X = represent_mix_simple(test_utt, embedding_model, f)
+    # train_X = represent_mix_lookup(train_Y, embedding_model, f)
     #----------
 
     # encode tags
