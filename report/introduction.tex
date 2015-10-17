@@ -8,29 +8,29 @@
 %	\item ...
 %	\item Set up rest of report
 %\end{itemize}
-Discourse structure analysis is fundamental for understanding spontaneous dialogs and developing human-computer dialog systems.
+Discourse structure analysis is essential for understanding spontaneous dialogs and developing human-computer dialog systems.
 An essential part of discourse structure analysis is the identification of dialog act classes (e.\ g.\ \emph{questions}, \emph{self-talks}, \emph{statements}, \emph{backchannels}).
-As defined by Austin \lau{add citation}, dialog acts present linguistic abstractions of the illocutionary force of speech acts and model the communicative intention in an utterance in a conversation. There are several tasks that have dialog acts as an input for their computations. Examples of these include speech recognition, speech synthesis, summarization, and of course, human-machine dialog systems. As a result, correctly identifying dialog act tags is fundamental for such tasks.
+As defined by Austin \shortcite{john1962austin}, dialog acts present linguistic abstractions of the illocutionary force of speech acts and model the communicative intention of an utterance in a conversation. There are several tasks that have dialog acts as an input for their computations. Examples of these include speech recognition, speech synthesis, summarization, and of course, human-machine dialog systems. As a result, correctly identifying dialog act tags is fundamental for such tasks.
 
 
-Table~\ref{tab:swda_example} shows an example of dialog acts from the Switchboard corpus we are trying to classify.
+Table~\ref{tab:swda_example} shows an example of dialog acts from the Switchboard corpus we are trying to classify. The table already gives an idea that some of the 43 dialog acts might have a rather closed set of possibilities (e.g. the classes Agree or Acknowledge) whereas classes like Statement can contain any content. Although the individual words in an utterance are important cues, we argue that the meaning of an utterance as a whole is essential for tagging it correctly.
 
 
-\david{we need to fix this table}
 
 \begin{table}[h]
 \centering
-\begin{tabular}{c l l}
+\small
+\begin{tabular}{ll}
 \hline
-\textbf{Speaker} & \textbf{Tag} & \textbf{Utterance}
+\textbf{Tag} & \textbf{Speaker / Utterance}
 \\
 \hline
-B & Wh-Question & how old is your daughter?\\
-A & Statement-non-opinion & she's three.\\
-B & Summarize & oh , so she's a little one.\\
-A & Agree & yes.\\
-B & Acknowledge & yeah.\\
-A & Statement-non-opinion & she's, she's little.\\
+Wh-Question & A: how old is your daughter?\\
+Statement-non-opinion & B: she's three.\\
+Summarize & oh , A: so she's a little one.\\
+Agree & B: yes.\\
+Acknowledge & A: yeah.\\
+Statement-non-opinion & B: she's, she's little.\\
 \hline
 \end{tabular}
 \caption{SWDA dialog excerpt.}
@@ -38,7 +38,7 @@ A & Statement-non-opinion & she's, she's little.\\
 \end{table}
 
 For the purpose of this work, we extract feature representations for entire utterances in an unsupervised fashion.
-For that we build a distributional semantic model that learns vector representations for entire utterances and then use these vector features as inputs for different machine learning classifiers.
+For that we build a distributional semantic model that learns vector representations for entire utterances and then use these vector features as inputs for different machine learning classifiers, expecting that the embeddings can model the meaning of an entire utterance.
 Several techniques can be used for mapping text units to a high dimensional real value space.
 Utterance embeddings have the attractive property of representing an entire textual sequence as a vector while taking word order into account, as opposed to the classical \emph{Bag-of-words} approach in which word order is not preserved and in which resulting vectors show no semantic relations.
 We expect this encapsulated extra information to play an important role in the classification task. In order to infer those embeddings we use the \emph{paragraph2vec} framework recently introduced by \cite{le2014distributed}, which is based on the previous word embedding models by \cite{mikolov2013efficient}.
