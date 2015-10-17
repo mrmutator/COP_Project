@@ -43,24 +43,6 @@ Several techniques can be used for mapping text units to a high dimensional real
 Utterance embeddings have the attractive property of representing an entire textual sequence as a vector while taking word order into account, as opposed to the classical \emph{Bag-of-words} approach in which word order is not preserved and in which resulting vectors show no semantic relations.
 We expect this encapsulated extra information to play an important role in the classification task. In order to infer those embeddings we use the \emph{paragraph2vec} framework recently introduced by \cite{le2014distributed}, which is based on the previous word embedding models by \cite{mikolov2013efficient}.
 
-
-\roger{I would put the following two paragraphs about embeddings into 3.1 Utterance Embeddings}\david{I agree but it could also go to the related work?}
-Neural networks for semantics has gained relevant importance in the past years, since the publication of the first neural networks word embedding models. One of the main reasons for this to happen, is the fact that the resulting vector representations are able to effectively capture the meaning of words given their context. Figure~\ref{fig:w2v_example} shows a typical example of this characteristic. \david{We need to explain what can be seen in that figure}
-
-
-\begin{figure}
-\centering
-\begin{minipage}{.4\textwidth}
-\includegraphics[width=1\textwidth]{img/w2v_example}
-\caption{Word2vec semantic relations.}
-\label{fig:w2v_example}
-\end{minipage}
-\end{figure}
-
-In these models, word embeddings are learned by predicting words within a context (depending on the neural network model -i.e. CBOW or Skip-gram, it could be that the network tries to predict a word given a context, or the context given a word). Due to the co-occurrence of words in texts, given the use of a language, these models are capable of successfully coming up with mathematical representations of words. This idea of word co-occurrences is not longer valid when we take sentences as units; a sentence can have -potentially- any other valid sentence before and after. Instead, a neural network for learning representations for sentences has been proposed, in which the sentence structures are learned from the words that are included in it \cite{le2014distributed}. In this case, word embeddings and sentence embeddings are trained simultaneously, where the sentence is represented with a vector, shared across the words within the phrase. This sentence representation is maintained and updated in parallel to the word vectors.  This unsupervised model makes it possible to map sentences (utterances) of any length to vectors of fixed length. Moreover, an interesting characteristic of this model is that any (unannotated) corpus can be used as input for training, allowing us to create huge training sets, based on several dialog corpora from different domains and with different characteristics.
-
 For the actual dialog act tagging we treat the problem as a multi-class classification task and classify utterances both in isolation as well as in the context of the previous utterances. We evaluate the tagging accuracy and compare different models. Besides the baselines set up by previous work, we compare the results against a simple baseline that uses a bag-of-words (BOW) representation for each utterance. 
-\david{as the paragraphs above might be the complicated part of our research we should spend some time getting this as clear and readable as possible}
-
 
 The outline of this report is set as follows: in Section 2, we present relevant approaches that aim at classifying dialog acts and briefly describe their main characteristics and results. In Section 3, we specify the datasets used in our experiments, present the model to infer utterance embeddings and we detail the properties of our classification pipeline. An exhaustive analysis of the results of the experiments is presented in Section 4. Finally, Section 5 includes conclusions drawn from this work as well as issues and future work. \lau{check}
