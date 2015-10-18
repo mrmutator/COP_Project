@@ -9,7 +9,7 @@
 %	\item maybe here something on datasets?
 %	\item ...
 %\end{itemize}
-
+\david{This needs a brief introduction with set up of this section}
 
 
 \subsection{Dialog datasets}
@@ -17,12 +17,12 @@
 \lau{Describe the BNC corpus.}
 Throughout the classification pipeline, we make use use different dialog corpora. With the purpose of training word embedding models, options include training using a combination of: the Switchboard corpus, the British National corpus, and pretrained word vectors.
 
-For the evaluation step is mandatory to utilize labelled data, for this reason, we train and evaluate our classifiers on the Switchboard corpus. We divide the dataset into a training and a validation set, containing $\%$ and $\%$ of the total length, respectively. \lau{add percentages}
+For the evaluation step is mandatory to utilize labelled data, for this reason, we train and evaluate our classifiers on the Switchboard corpus. We divide the dataset into a training and a test set, containing $\%$ and $\%$ of the total length, respectively. \lau{add percentages}
 
 In the next subsections we present a description of each dataset.
 
 \subsubsection*{The Switchboard corpus}
-The Switchboard Dialog Act corpus (SwDA) consists of a compilation of telephone transcriptions between two participants. It contains a total 205.000 utterances and 1.4 million words
+The Switchboard Dialog Act corpus (SwDA) consists of a compilation of telephone transcripts between two interlocutors. It contains a total 205.000 utterances and 1.4 million words
 While many features are defined for each utterance unit, the most important for our work is the tag attribute. Each utterance is associated to a label, which summarizes syntactic, semantic, and pragmatic information. The corpus contains a total of 200 tags, which can be further aggregated into 44 main classes. Table~\ref{tab:swda_tag_example} shows examples for the five most common tags. Table~\ref{tab:swda_sent_example} present examples of utterances contained in the SwDA corpus.
 
 \lau{add cite to SWDA}
@@ -76,5 +76,28 @@ B2E 714 Then Fulham got one of her worst raids of the war. \\
 \label{tab:bnc_sent_example}
 \end{table}
 
-\subsection{Classifiers}
+\subsection{Discourse Model}
+\david{Please check the following on readability}
+
+Just like \newcite{stolcke200} we will model a dialog as an HMM. The hidden states will be the dialog acts and the observed quantities the uttered words and their speaker. To find the most likely tag for a single utterance we will find the best dialog act tag $t$ for an utterance using equation \ref{eq:maxtag}.
+
+\begin{equation}\label{eq:maxtag}
+	\begin{align*}
+	t^* &= \underset{t}{argmax} P(t|u) \\
+	&=\underset{t}{argmax} \frac{P(u|t)P(t)}{P(u)}\\
+	&=\underset{t}{argmax} \underbrace{P(u|t)}_{\text{sentence model}}\underbrace{P(t)}_{\text{discourse model}}\\
+	\end{align*}
+\end{equation}
+
+We discuss the sentence model in detail in section \ref{sec:sentencemodel}. As a discourse model we will assume that the \emph{prior probability} of a tag depends on the preceding tags and their speakers. $P(t_i) = P(t_i|t_{i-1}...t_0, s_{i-1}...s_0)$. Where we assume that the discourse is a Markov Model of order $k$: $P(t_i) = P(t_i|t_{i-1}...t_{i-k}, s_{i-1}...s_{i-k})$.
+
+Different dynamic programming techniques can be used to find the most probable sequence of tags $\mathbf{t}$ given a sequence of utterances $\mathbf{u}$ and their speaker $\mathbf{s}$, we will use the Viterbi decoding algorithm \newcite{viterbi}.
+
+\david{the following could go to the discussion, but i think it is good to note these assumptions straight away}
+An assumption made in this model is that two sequential utterances $u_i$ and $u_{i+1}$ are independent of each other. We know that in conversation interlocutors tend to align on different levels including lexical choices \newcite{echoes}. Also it is very likely that the same words will be used in the answer to a question as in the question. However we count on the fact that the dependence of $u_i$ and $t_i$ will be stronger than the is stronger than the independence violation of $u_i$ and $u_{i+1}$ \newcite{stolcke2000}.
+
+
+\subsection{Sentence Models}\label{sec:sentencemodel}
+\david{Do we want to do this before or after the discourse model?}
 \lau{Mention which classifiers we use, and with which params}
+

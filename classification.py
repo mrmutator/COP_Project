@@ -1,5 +1,6 @@
 import classifier as cl
 from par2vec import load_all_models
+from gensim.models import Doc2Vec
 from corpora import get_utterances_from_file
 from sklearn import preprocessing
 from sklearn import naive_bayes
@@ -189,7 +190,7 @@ def baseline_scores(train_utt, train_Y, test_utt, test_Y):
     # Baseline scores, use BOW representation of utterances
     train_X, test_X = bow_representation(train_utt, test_utt)
     print "BOW representation created"
-    print "KNN Accuracy: ", cl.KNN_classifier(train_X, train_Y, test_X, test_Y)
+    # print "KNN Accuracy: ", cl.KNN_classifier(train_X, train_Y, test_X, test_Y)
     # print "SVM Accuracy: ", cl.SVM_classifier(train_X, train_Y, test_X, test_Y)
     print "NB Accuracy: ", cl.NB_classifier(train_X, train_Y, test_X, test_Y)
 
@@ -237,6 +238,7 @@ def classify_context_dependent():
         # utterances with corresponding DA tags for language model
     # testing:
         # sequences of utterances with corresponding speakers and DA tags (for evaluation)
+    embedding_model_location = 'data/swda_bnc_noint_50_300'
     print "Loading Data"
     train_dialogs, test_dialogs =  load_data_hmm()
     
@@ -257,18 +259,21 @@ def classify_context_dependent():
 
     print "Loading sentence model"
     # train/load 'language model'
+    embedding_model = Doc2Vec.load(embedding_model_location+'.model')
     # load a doc2vec model to train the language model with
-    vectorizer = CountVectorizer(min_df=1)
+    # vectorizer = CountVectorizer(min_df=1)
     # fit + transform on all training data
-    train_utt =[]
+    # train_utt =[]
     train_Y = []
+    train_X = []
     for dialog in train_dialogs:
         for tag, utt in dialog:
-            train_utt.append(utt)
+            # train_utt.append(utt)
+            train_X.append(embedding_model.infer_vector(utt))
             train_Y.append(tag.split('/')[0])
-    train_X = vectorizer.fit_transform(train_utt)   
-    model = naive_bayes.BernoulliNB()
-    model.fit(train_X, train_Y)
+    # train_X = embedding_model.infer_vector(train_utt)   
+    model = mlp.Classifier(layers=[mlp.Layer("Sigmoid", units=100), mlp.Layer("Softmax")], learning_rate=0.001, n_iter=25)
+    model.fit(np.array(train_X), np.array(train_Y))
 
 
 
@@ -293,7 +298,7 @@ def classify_context_dependent():
         print i
         i += 1
         for tag, utt in dialog:
-            rep = vectorizer.transform([utt]) # TODO This does something very weird
+            rep = embedding_model.infer_vector([utt]) # TODO This does something very weird
             probas.append(model.predict_proba(rep))
         # this needs to be given the representation it needs in the language model
         # then we can use this with the predict_proba to calculate the emmision probability matrix
@@ -315,6 +320,7 @@ def classify_context_dependent():
 
 
 if __name__ == '__main__':
-    # classify_context_dependent()
-
-    evaluate_model('data/models/swda_s300_w8')
+    classify_context_dependent()
+    # train_utt, train_Y, test_utt, test_Y = load_data()
+    # baseline_scores(train_utt, train_Y, test_utt, test_Y)
+    # evaluate_model('data/models/swda_s300_w8')
