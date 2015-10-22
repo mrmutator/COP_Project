@@ -11,6 +11,8 @@ import sys
 from itertools import groupby
 from operator import add
 from operator import concat
+from itertools import islice
+from corpora import get_swda_utterances
 
 
 def load_data_hmm():
@@ -122,9 +124,16 @@ def represent_lookup(labels, model):
     return X
 
 def e_add(utt1,utt2):
+    '''
+    returns a function that adds two lists elementwise.
+
+    :param utt1:
+    :param utt2:
+    :return:
+    '''
     return map(add, utt1, utt2)
 
-def represent_mix_simple(utterances, model, op):
+def represent_mix_simple(utterances, tags, model, op):
     '''
     incorporates previous utterance with operator param.
     retrieves utterance representations via inference
@@ -132,14 +141,20 @@ def represent_mix_simple(utterances, model, op):
     :param model:
     :return:
     '''
+
+    # utterances: tag + utt.conversation_no + utt.caller + c
     # this represents every utterance as it's own embedding this should be extended to encorporate some context
     X = []
     for j, utt in enumerate(utterances):
         actual_utt = list(model.infer_vector(utt.split()))
         if j == 0:
+            # if its the first utt in the list, we dont have a prev utterance. Repeat the actual utt.
             mixed_rep = op(actual_utt,actual_utt)
         else:
-            prev_utt = list(model.infer_vector(utterances[j-1].split()))
+            # if its the beginning of a convo, we dont have a prev utterance. Repeat the actual utt.
+            prev_conv_nr = tags[j-1].split('/')[1].split('_')[0]
+            actual_conv_nr = tags[j].split('/')[1].split('_')[0]
+            prev_utt = list(model.infer_vector(utterances[j-1])) if prev_conv_nr == actual_conv_nr else actual_utt
             mixed_rep = op(prev_utt,actual_utt)
         X.append(mixed_rep)
         sys.stderr.write("\r");
@@ -159,11 +174,13 @@ def represent_mix_lookup(labels, model, op):
     '''
     X = []
     for j, label in enumerate(labels):
-        actual_utt = list(model.docvecs[label][0][0])
+        actual_utt = list(model.docvecs[label])
         if j == 0:
             mixed_rep = op(actual_utt, actual_utt)
         else:
-            prev_utt = list(model.docvecs[labels[j-1]][0][0])
+            prev_conv_utt = labels[j-1].split('/')[1].split('_')[0]
+            actual_conv_utt = label.split('/')[1].split('_')[0]
+            prev_utt = list(model.docvecs[labels[j-1]]) if prev_conv_utt == actual_conv_utt else actual_utt
             mixed_rep = op(prev_utt, actual_utt)
         X.append(mixed_rep)
         sys.stderr.write("\r");
@@ -189,8 +206,11 @@ def baseline_scores(train_utt, train_Y, test_utt, test_Y):
     print "Calculating baseline BOW scores"
     # Baseline scores, use BOW representation of utterances
     train_X, test_X = bow_representation(train_utt, test_utt)
+
+    train_Y, test_Y = encode_tags(train_Y, test_Y)
+
     print "BOW representation created"
-    # print "KNN Accuracy: ", cl.KNN_classifier(train_X, train_Y, test_X, test_Y)
+    print "KNN Accuracy: ", cl.KNN_classifier(train_X, train_Y, test_X, test_Y)
     # print "SVM Accuracy: ", cl.SVM_classifier(train_X, train_Y, test_X, test_Y)
     print "NB Accuracy: ", cl.NB_classifier(train_X, train_Y, test_X, test_Y)
 
@@ -209,15 +229,15 @@ def evaluate_model(embedding_model_location):
     # train_X = represent_simple(train_utt, embedding_model)
     # test_X = represent_simple(test_utt, embedding_model)
 
-    train_X = represent_lookup(train_Y, embedding_model)
-    test_X = represent_simple(test_utt, embedding_model)
+    # train_X = represent_lookup(train_Y, embedding_model)
+    # test_X = represent_simple(test_utt, embedding_model)
 
-    #---------- lqrz: add or concatenate the previous utterance
+    # ---------- lqrz: add or concatenate the previous utterance
     # f = concat
-    # f = e_add
-    # test_X = represent_mix_simple(test_utt, embedding_model, f)
-    # train_X = represent_mix_lookup(train_Y, embedding_model, f)
-    #----------
+    f = e_add
+    test_X = represent_mix_simple(test_utt, test_Y, embedding_model, f)
+    train_X = represent_mix_lookup(train_Y, embedding_model, f)
+    # ----------
 
     # encode tags
     train_Y, test_Y = encode_tags(train_Y, test_Y)
@@ -320,7 +340,7 @@ def classify_context_dependent():
 
 
 if __name__ == '__main__':
-    classify_context_dependent()
+    # classify_context_dependent()
     # train_utt, train_Y, test_utt, test_Y = load_data()
     # baseline_scores(train_utt, train_Y, test_utt, test_Y)
-    # evaluate_model('data/models/swda_s300_w8')
+    evaluate_model('data/models/swda_only_int_10_300_agg')
