@@ -6,19 +6,39 @@ import re
 import codecs
 import os
 from lxml import etree as ET
-import random
 
 
 def get_swda_utterances(swda_dir):
     corpus = CorpusReader(swda_dir)
     c = 0
+    last_utterances = dict()
+
     for trans in  corpus.iter_transcripts(display_progress=True):
+            last_utterances["A"] = []
+            last_utterances["B"] = []
             for utt in trans.utterances:
-                utt_temp = re.sub(r'\(|\)|-|\{.+? |\}|\[|\]|\+|#|/|<.+?>', "", utt.text.lower())
+                utt_temp = re.sub(r'\(|\)|-|\{.+? |\}|\[|\]|\+|#|/|<.+?>|,', "", utt.text.lower())
                 utt_tokens = word_tokenize(re.sub("<|>", "", utt_temp))
-                if utt_tokens:
-                    yield utt.damsl_act_tag() + "/%s_%s_%s" % (utt.conversation_no, utt.caller, c), utt_tokens
+                if utt.damsl_act_tag() != "+":
+                    last_utterances[utt.caller].append((c, utt.damsl_act_tag() + "/%s_%s_%s" % (utt.conversation_no, utt.caller, c), utt_tokens))
                     c += 1
+                else:
+                    try:
+                        prev = last_utterances[utt.caller].pop()
+                        new = (prev[0], prev[1], prev[2] + utt_tokens)
+                        last_utterances[utt.caller].append(new)
+                    except IndexError:
+                        pass
+                        # RW: for some reason, Chris Potts' Corpus Reader gives us utterances with a "+" tag although
+                        # there is no previous utterance of the same speaker to complete.
+                        # Looking at the originial data, there seems to be a bug in his Corpus Reader that skips some
+                        # stuff in the beginning for some reason (e.g. the beginning of conv. no 3554.
+                        print utt.conversation_no
+            utterances = last_utterances["A"] + last_utterances["B"]
+            utterances = sorted(utterances, key= lambda t: t[0])
+            for tpl in utterances:
+                if tpl[2]:
+                    yield tpl[1:]
 
 def get_SB_utterances(SB_dir):
     for f in glob.glob(SB_dir + "/*.trn"):
@@ -70,24 +90,30 @@ def get_bnc_utterances(bnc_dir):
                         if tokens:
                             yield doc_id + "_" + utt_id, tokens
 
-
-
-def write_train_test_files(corpus, transcript_number_file, number_of_test_transcripts, test_file_name, train_file_name):
-    transcript_number_file = open(transcript_number_file, "r")
+def get_transcript_numbers(file_name):
+    transcript_number_file = open(file_name, "r")
     transcript_numbers = transcript_number_file.readlines()
     transcript_number_file.close()
-    transcript_numbers = map(int, (map(str.strip, transcript_numbers)))
-    test_set_transcripts = random.sample(transcript_numbers, number_of_test_transcripts)
+    return [int(x[2:].strip()) for x in transcript_numbers]
+
+
+def write_train_test_files(corpus, train_transcript_number_file, test_transcript_number_file, test_file_name, train_file_name):
+    train_numbers = get_transcript_numbers(train_transcript_number_file)
+    test_numbers = get_transcript_numbers(test_transcript_number_file)
 
     outfile_test = codecs.open(test_file_name, "w", "utf-8")
     outfile_train = codecs.open(train_file_name, "w", "utf-8")
     test_tags = set()
     for tag, utt_tokens in corpus:
-        if int(tag.split("/")[-1].split("_")[0]) in test_set_transcripts:
+        conv_number = int(tag.split("/")[-1].split("_")[0])
+        if conv_number in test_numbers:
             outfile_test.write(tag + "\t" + " ".join(utt_tokens) + "\n")
             test_tags.add(tag.split("/")[0])
-        else:
+        elif conv_number in train_numbers:
             outfile_train.write(tag + "\t" + " ".join(utt_tokens) + "\n")
+        else:
+            # print conv_number # should not happen, happens nevertheless?!
+            pass
 
     outfile_train.close()
     outfile_test.close()
@@ -100,7 +126,7 @@ if __name__ == "__main__":
     corpus = get_swda_utterances("data/swda")
     # corpus = get_utterances_from_file("data/swda_utterances.txt")
     #write_file(corpus, "data/swda_utterances.txt")
-    write_train_test_files(corpus, "data/transcripts.txt", 19, "test", "train")
+    write_train_test_files(corpus, "data/ws97-train-convs.list", "data/ws97-test-convs.list", "test", "train")
 
     # corpus = get_SB_utterances("data/SB")
     # write_file(corpus, "data/SB_utterances.txt")
