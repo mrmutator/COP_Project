@@ -10,15 +10,16 @@ def learn_transition_matrix(training_sequences, speaker_sequences, number_of_sta
 		assert len(sequence) == len(speakers)
 		from_tag = (None,) * order
 		from_tag = from_tag[1:] + (sequence[0],)
-		utterers = (None,) * order
-		utterers = utterers[1:] + (speakers[0],)
+		# utterers = (None,) * order
+		# utterers = utterers[1:] + (speakers[0],)
 		start_prob[from_tag] += 1
 		for i in range(1,len(sequence)):
 			to_tag = sequence[i]
-			speaker_tuple = tuple([speakers[i] == utt for utt in utterers])
-			X_1[(from_tag, speaker_tuple)][to_tag] += 1
+			# speaker_tuple = tuple([speakers[i] == utt for utt in utterers])
+			# X_1[(from_tag, speaker_tuple)][to_tag] += 1
+			X_1[from_tag][to_tag] += 1
 			from_tag = from_tag[1:] + (to_tag,)
-			utterers = utterers[1:] + (speakers[i],)
+			# utterers = utterers[1:] + (speakers[i],)
 	# normalize to get actual probabilities
 	start_prob = start_prob/sum(start_prob)
 	for counter in X_1.itervalues():
@@ -37,24 +38,24 @@ def viterbi_decoder(sequence,speakers, start_prob, transition_matrix, emmision_p
 
 	T_1[:,0] = np.multiply(emmision_probs[:,0], start_prob)
 
-	utterers = (None,) * order
-	utterers = utterers[1:] + (speakers[0],)
+	# utterers = (None,) * order
+	# utterers = utterers[1:] + (speakers[0],)
 	n_Nones = order -1
 	for i in range(1,len(sequence)):
 		for j in range(number_of_states):
-			speaker_tuple = tuple([speakers[i] == utt for utt in utterers])
-			state_lists = [state for state in transition_matrix.iterkeys() if state[1] == speaker_tuple and state[0][:n_Nones] == (None,)*n_Nones]
+			# speaker_tuple = tuple([speakers[i] == utt for utt in utterers])
+			state_lists = [state for state in transition_matrix.iterkeys() if state[:n_Nones] == (None,)*n_Nones]# and state[1] == speaker_tuple]
 
 			maxk = None
 			maxval = None
 			for state in state_lists:
-				val = T_1[state[0][-1], i-1] *transition_matrix[state][j] *emmision_probs[j,i]
+				val = T_1[state[-1], i-1] *transition_matrix[state][j] *emmision_probs[j,i]
 				if val > maxval:
 					maxval = val
-					maxk = state[0][-1]
+					maxk = state[-1]
 			T_1[j,i] = maxval
 			T_2[j,i] = maxk
-		utterers = utterers[1:] + (speakers[i],)
+		# utterers = utterers[1:] + (speakers[i],)
 		if n_Nones > 0:
 			n_Nones -= 1
 	most_likely_hidden = np.zeros(len(sequence))

@@ -64,25 +64,9 @@ def test_model(model_name):
 
 
 if __name__ == "__main__":
-
+    train_model("data/swda_utterances.train", "models2/swda_only_300", w2v_intersect = 'data/GoogleNews-vectors-negative300.bin.gz', epochs =1)
     # train different dimensions
-    for data_label, data in [("swda_only", "data/swda_utterances.train"), ("swda_bnc", "data/swda_bnc_utterances.train")]:
-        for dim in [100, 400, 500, 800, 1000]:
-            print data_label, dim
-            train_model(data, "models/" + data_label + "_10" + "_" + str(dim), epochs=10, size=dim)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    # for data_label, data in [("swda_only", "data/swda_utterances.train"), ("swda_bnc", "data/swda_bnc_utterances.train")]:
+    #     for dim in [100, 400, 500, 800, 1000]:
+    #         print data_label, dim
+    #         train_model(data, "models/" + data_label + "_10" + "_" + str(dim), epochs=10, size=dim)
