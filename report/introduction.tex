@@ -10,10 +10,15 @@
 %\end{itemize}
 Discourse structure analysis is essential for understanding spontaneous dialogs and developing human-computer dialog systems.
 An essential part of discourse structure analysis is the identification of dialog act classes (e.\ g.\ \emph{questions}, \emph{self-talks}, \emph{statements}, \emph{backchannels}).
-As defined by Austin \shortcite{john1962austin}, dialog acts present linguistic abstractions of the illocutionary force of speech acts and model the communicative intention of an utterance in a conversation. There are several tasks that have dialog acts as an input for their computations. Examples of these include speech recognition, speech synthesis, summarization, and of course, human-machine dialog systems. As a result, correctly identifying dialog act tags is fundamental for such tasks.
+As defined by Austin \shortcite{john1962austin}, dialog acts present linguistic abstractions of the illocutionary force of speech acts and model the communicative intention of an utterance in a conversation.
+There are several tasks that are require utterances to be tagged with dialog acts.
+Examples of these include speech recognition, speech synthesis, summarization, and of course, human-machine dialog systems.
+The correct identification of dialog act tags for utterances is thus an important research topic.
 
 
-Table~\ref{tab:swda_example} shows an example of dialog acts from the Switchboard corpus we are trying to classify. The table already gives an idea that some of the 43 dialog acts might have a rather closed set of possibilities (e.g. the classes Agree or Acknowledge) whereas classes like Statement can contain any content. Although the individual words in an utterance are important cues, we argue that the meaning of an utterance as a whole is essential for tagging it correctly.
+Table~\ref{tab:swda_example} shows an example of dialog acts from the Switchboard corpus we are trying to classify.
+The table already gives an idea that some of the 43 dialog acts might have a rather closed set of possible realisations (e.g. the classes \emph{Agree} or \emph{Acknowledge}) whereas classes like \emph{Statement} can contain utterances of almost any content.
+Although the individual words in an utterance are important cues, we argue that the meaning of an utterance as a whole is essential for tagging it correctly.
 
 
 
@@ -38,11 +43,13 @@ Statement-non-opinion & B: she's, she's little.\\
 \end{table}
 
 For the purpose of this work, we extract feature representations for entire utterances in an unsupervised fashion.
-For that we build a distributional semantic model that learns vector representations for entire utterances and then use these vector features as inputs for different machine learning classifiers, expecting that the embeddings can model the meaning of an entire utterance.
+We therefore build a distributional semantic model that learns vector representations for entire utterances and then use these vector features as inputs for different machine learning classifiers, expecting that the embeddings can model the meaning of an entire utterance.
 Several techniques can be used for mapping text units to a high dimensional real value space.
-Utterance embeddings have the attractive property of representing an entire textual sequence as a vector while taking word order into account, as opposed to the classical \emph{Bag-of-words} approach in which word order is not preserved and in which resulting vectors show no semantic relations.
-We expect this encapsulated extra information to play an important role in the classification task. In order to infer those embeddings we use the \emph{paragraph2vec} framework recently introduced by \cite{le2014distributed}, which is based on the previous word embedding models by \cite{mikolov2013efficient}.
+Utterance embeddings have the attractive property of representing an entire textual sequence as a vector while taking word order into account, as opposed to the classical \emph{Bag-of-words} approach in which word order is not preserved and in which resulting vectors show only little semantic relations.
+We expect this additional information to play an important role in the classification task. In order to infer those embeddings we use the \emph{paragraph2vec} framework recently introduced by \cite{le2014distributed}, which is based on the earlier word embedding models by \cite{mikolov2013efficient}.
 
-For the actual dialog act tagging we treat the problem as a multi-class classification task and classify utterances both in isolation as well as in the context of the previous utterances. We evaluate the tagging accuracy and compare different models. Besides the baselines set up by previous work, we compare the results against a simple baseline that uses a bag-of-words (BOW) representation for each utterance. 
+For the actual dialog act tagging we treat the problem as a multi-class classification task and classify utterances both in isolation as well as in the context of the previous utterances.
+We evaluate the tagging accuracy and compare different models.
+Besides the baselines provided by research from previous work, we compare the results against a simple baseline that uses a bag-of-words (BOW) representation for each utterance. 
 
-The outline of this report is set as follows: in Section 2, we present relevant approaches that aim at classifying dialog acts and briefly describe their main characteristics and results. In Section 3, we specify the datasets used in our experiments, present the model to infer utterance embeddings and we detail the properties of our classification pipeline. An exhaustive analysis of the results of the experiments is presented in Section 4. Finally, Section 5 includes conclusions drawn from this work as well as issues and future work. \lau{check}
+The outline of this report is set as follows: In Section 2, we present relevant approaches that aim at classifying dialog acts and briefly describe their main characteristics and results. In Section 3 we describe the concept of utterance embeddings and their training in more detail. Section 4 specifies the datasets and the details of our classification pipeline. An exhaustive analysis of the results of the experiments is presented in Section 5. Finally, Section 6 includes conclusions drawn from this work as well as issues and future work. \lau{check}
