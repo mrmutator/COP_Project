@@ -189,10 +189,13 @@ def baseline_scores(train_utt, train_Y, test_utt, test_Y):
     print "Calculating baseline BOW scores"
     # Baseline scores, use BOW representation of utterances
     train_X, test_X = bow_representation(train_utt, test_utt)
-    print "BOW representation created"
-    # print "KNN Accuracy: ", cl.KNN_classifier(train_X, train_Y, test_X, test_Y)
+    # print "BOW representation created"
+    print "KNN Accuracy: ", cl.KNN_classifier(train_X, train_Y, test_X, test_Y)
     # print "SVM Accuracy: ", cl.SVM_classifier(train_X, train_Y, test_X, test_Y)
     print "NB Accuracy: ", cl.NB_classifier(train_X, train_Y, test_X, test_Y)
+   
+    
+    
 
 def evaluate_model(embedding_model_location):
     # load training and test data
@@ -209,14 +212,14 @@ def evaluate_model(embedding_model_location):
     # train_X = represent_simple(train_utt, embedding_model)
     # test_X = represent_simple(test_utt, embedding_model)
 
-    train_X = represent_lookup(train_Y, embedding_model)
-    test_X = represent_simple(test_utt, embedding_model)
+    # train_X = represent_lookup(train_Y, embedding_model)
+    # test_X = represent_simple(test_utt, embedding_model)
 
     #---------- lqrz: add or concatenate the previous utterance
-    # f = concat
+    f = concat
     # f = e_add
-    # test_X = represent_mix_simple(test_utt, embedding_model, f)
-    # train_X = represent_mix_lookup(train_Y, embedding_model, f)
+    test_X = represent_mix_simple(test_utt, embedding_model, f)
+    train_X = represent_mix_lookup(train_Y, embedding_model, f)
     #----------
 
     # encode tags
@@ -259,21 +262,23 @@ def classify_context_dependent():
 
     print "Loading sentence model"
     # train/load 'language model'
-    embedding_model = Doc2Vec.load(embedding_model_location+'.model')
+    # embedding_model = Doc2Vec.load(embedding_model_location+'.model')
     # load a doc2vec model to train the language model with
-    # vectorizer = CountVectorizer(min_df=1)
+    vectorizer = CountVectorizer(min_df=1)
     # fit + transform on all training data
-    # train_utt =[]
+    train_utt =[]
     train_Y = []
-    train_X = []
+    # train_X = []
     for dialog in train_dialogs:
         for tag, utt in dialog:
-            # train_utt.append(utt)
-            train_X.append(embedding_model.infer_vector(utt))
+            train_utt.append(utt)
+            # train_X.append(embedding_model.infer_vector(utt))
             train_Y.append(tag.split('/')[0])
-    # train_X = embedding_model.infer_vector(train_utt)   
-    model = mlp.Classifier(layers=[mlp.Layer("Sigmoid", units=100), mlp.Layer("Softmax")], learning_rate=0.001, n_iter=25)
-    model.fit(np.array(train_X), np.array(train_Y))
+    train_X = vectorizer.fit_transform(train_utt)   
+    # model = mlp.Classifier(layers=[mlp.Layer("Sigmoid", units=100), mlp.Layer("Softmax")], learning_rate=0.001, n_iter=25)
+    model = naive_bayes.BernoulliNB()
+    model.fit(train_X, train_Y)
+    # model.fit(np.array(train_X), np.array(train_Y))
 
 
 
@@ -298,8 +303,9 @@ def classify_context_dependent():
         print i
         i += 1
         for tag, utt in dialog:
-            rep = embedding_model.infer_vector([utt]) # TODO This does something very weird
-            probas.append(model.predict_proba(rep))
+            # rep = embedding_model.infer_vector([utt])
+            rep = vectorizer.transform([utt])
+            probas.append(model.predict_proba(rep)/ emmision_probabilites)
         # this needs to be given the representation it needs in the language model
         # then we can use this with the predict_proba to calculate the emmision probability matrix
 
@@ -320,7 +326,10 @@ def classify_context_dependent():
 
 
 if __name__ == '__main__':
-    classify_context_dependent()
+    # classify_context_dependent()
+    train_utt, train_Y, test_utt, test_Y = load_data()
+    train_Y, test_Y = encode_tags(train_Y,test_Y)
+    baseline_scores(train_utt, train_Y, test_utt, test_Y)
     # train_utt, train_Y, test_utt, test_Y = load_data()
     # baseline_scores(train_utt, train_Y, test_utt, test_Y)
-    # evaluate_model('data/models/swda_s300_w8')
+    # evaluate_model('data/models/swda_only_300')
