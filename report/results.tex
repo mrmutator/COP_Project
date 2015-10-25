@@ -1,13 +1,11 @@
 \section{Results}\label{sec:results}
-%\begin{itemize}
-%	\item discuss results per hypotheses
-%	\item \david{we could also put the methodology here and focus the last section on utterance embeddings?}
-%	\item ...
-%\end{itemize}
+In this section we report the results for our baseline and different configurations for finding utterance embeddings. Also we present some analysis of our distributional representations.
+
 \subsection{Baseline}
-As a baseline we represent each utterance as a bag of words. We represent each utterance as a sparse vector, were every dimension maps to a word in the vocabulary. We then train a Naive Bayes model and a K-Nearest Neighbor classifier on the dialog act tagging task, both for the full tag set of 42 tags as well as on the aggregated tag set \david{How many tags}. The results can be seen in Table \david{make table with results} and \david{a seperate table for aggregated tag set pherhaps?} respectively. \david{Report best baseline explicitly here}
+As a baseline we represent each utterance as a bag of words. We represent each utterance as a sparse vector, were every dimension maps to a word in the vocabulary. We then train a Naive Bayes model and a K-Nearest Neighbor classifier on the dialog act tagging task, both for the full tag set of 42 tags as well as on the aggregated tag set \david{How many tags}. The results can be seen in Table \david{make table with results} and \david{a seperate table for aggregated tag set pherhaps?} respectively. \david{Report best baseline explicitly here}. Furthermore we include a trivial baseline where every utterance is classified as the most frequent dialog act tag, this would result in an accuracy of \david{what accuracy?}.
 
 \subsection{Classification using Utterance Embeddings}
+\david{Do we want to present everything here or just the best?}
 We found embeddings for utterances as discussed in section \ref{sec:utt2vec}. Different setting were used to find these embeddings, we varied the training data, number of training epochs and whether or not we used pretrained word embeddings. With these utterance embeddings we trained Naive Bayes, K-Nearest Neighbor and Multi Layered Perceptron classifiers. In Table \david{make table} the results for the full tagset are presented, where Table \david{also make that table}, present the results on the aggregated tag set. \david{Report best result here}
 
 \subsection{Using context}
