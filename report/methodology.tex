@@ -133,6 +133,6 @@ For the actual classification task we use three different classifiers which we t
 
 First of all we used a Naive Bayes classifier \newcite{naivebabes} from Scikit Learn \footnote{\url{http://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html#sklearn.naive_bayes.GaussianNB}}. This is a technique is usually quite strong with sparse representations as bag of words, which we will use for our baseline \david{does this have any hyperparameters?}
 
-Also a K-Nearest Neighbor classifier from Scikit Learn \footnote{\url{http://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html#examples-using-sklearn-neighbors-kneighborsclassifier}} with $K=5$ neighbors, \emph{euclidean} distance metric and uniform weights. This technique is more suited for the dense representations we find as utterance embeddings.
+Also a K-Nearest Neighbor classifier from Scikit Learn \footnote{\url{http://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html}} with $K=5$ neighbors, \emph{euclidean} distance metric and uniform weights was trained. This technique is more suited for the dense representations we find as utterance embeddings.
 
 Last a Multi Layered Perceptron was used to classify dialog act tags, as implemented in Scikit Neural Network \footnote{\url{http://scikit-neuralnetwork.readthedocs.org/en/latest/module_mlp.html}}. We used $1$ hidden layer of $100$ dimensions and a softmax layer. The network was trained for 25 iterations at a learning rate of $10^{-3}$.
