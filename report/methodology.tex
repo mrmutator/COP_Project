@@ -19,15 +19,6 @@ The dataset, the actual classifiers and the tagsets are described in the followi
 \roger{Baselines}
 
 \subsection{Dialog datasets}
-\lau{Describe the switchboard corpus. It's 42 tags.}
-\lau{Describe the BNC corpus.}
-Throughout the classification pipeline, we make use use different dialog corpora. With the purpose of training word embedding models, options include training using a combination of: the Switchboard corpus, the British National corpus, and pretrained word vectors.
-
-For the evaluation step is mandatory to utilize labeled data, for this reason, we train and evaluate our classifiers on the Switchboard corpus. We divide the dataset into a training and a test set, containing $\%$ and $\%$ of the total length, respectively. \lau{add percentages}
-
-In the next subsections we present a description of each dataset.
-
-\subsubsection*{The Switchboard corpus}
 
 The dialog act classifiers are trained in a supervised fashion, which requires labeled data.
 For that purpose, we evaluate the actual dialog act tagging on the Switchboard Dialog Act corpus (SwDA) \roger{cite}.
