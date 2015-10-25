@@ -6,5 +6,9 @@
 	\item ...
 \end{itemize}
 
+\david{we do not beat the baseline}
+
+\david{Milajevs does SVD to reduce his feature space maybe that could work for us}
+
 \david{Can somebody check this?}
 A major problem with the work presented in this paper is the lack of naturally encorporating context into the representation of utterances. Future work should therefore concentrate on mending this weakness. One possible approach to this problem would be to use yet another deep learning technique called Long Short Term Memory (LSTM) as proposed by \newcite{lstm-original}. This recurrent neural network uses a so called memory cell with four connections, an input gate, an output gate, a self recurrent gate and a forget gate. The input gate can be used to alter the state of the memory cell, while the output gate can be used to affect the state of other layers. This technique can be applied to dialog act tagging by using the utterance embeddings presented earlier as inputs for the LSTM. The output of the LSTM cell can then be used to predict a tag for that utterance. Since the utterances are fed to the LSTM in sequence, the memory cell can be thought to represent the contextual knowledge of the conversation up to that point.
