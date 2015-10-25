@@ -13,7 +13,8 @@ from operator import add
 from operator import concat
 from itertools import islice
 from corpora import get_swda_utterances
-
+from tagset import get_aggregated_tagset_mapping
+from utils import Doc2VecKeyError
 
 def load_data_hmm():
     train_sequences = []
@@ -63,14 +64,28 @@ def load_data():
     return train_utt, train_Y, test_utt, test_Y
 
 
-def encode_tags(train_Y, test_Y):
-    train_Y = [t.split("/")[0] for t in train_Y]
-    test_Y = [t.split("/")[0] for t in test_Y]
+def encode_tags(train_Y, test_Y, aggregated_tagset=False):
+
+    mapping = get_aggregated_tagset_mapping()
+
+    # get tags according to aggregated group
+    if not aggregated_tagset:
+        train_Y = [t.split("/")[0] for t in train_Y]
+        test_Y = [t.split("/")[0] for t in test_Y]
+    else:
+        train_Y = [mapping[t.split("/")[0]] for t in train_Y]
+        test_Y = [mapping[t.split("/")[0]] for t in test_Y]
+        assert len(set(train_Y).difference(set(mapping.values()))) == 0, 'Error in mapping train tagset'
+        assert len(set(test_Y).difference(set(mapping.values()))) == 0, 'Error in mapping test tagset'
+
+    # train the encoder
     le = preprocessing.LabelEncoder()
     le.fit(train_Y + test_Y)
 
-    train_Y = le.transform(train_Y)  # return normalized tags
+    # transform tags
+    train_Y = le.transform(train_Y)
     test_Y = le.transform(test_Y)
+
     return train_Y, test_Y
 
 
@@ -157,12 +172,32 @@ def represent_mix_simple(utterances, tags, model, op):
             prev_utt = list(model.infer_vector(utterances[j-1])) if prev_conv_nr == actual_conv_nr else actual_utt
             mixed_rep = op(prev_utt,actual_utt)
         X.append(mixed_rep)
-        sys.stderr.write("\r");
-        sys.stderr.write("utterance %s" % j);
-        sys.stderr.flush();
+        if (j+1) % 1000 == 0:
+            sys.stderr.write("\r");
+            sys.stderr.write("utterance %s" % (j+1));
+            sys.stderr.flush();
+
+    sys.stderr.write("\r");
+    sys.stderr.write("utterance %s" % (j+1));
+    sys.stderr.flush();
     sys.stderr.write("\n")
 
     return X
+
+def get_lookedup_vector(model, key):
+    '''
+    doc2vec returns an ndim-3 array if it doesnt find the key,
+    :param model:
+    :param key:
+    :return:
+    '''
+    vec = model.docvecs[key]
+
+    # if the doc2vec model returns trash, return None
+    if not vec.ndim == 1:
+        raise Doc2VecKeyError
+
+    return vec
 
 def represent_mix_lookup(labels, model, op):
     '''
@@ -172,21 +207,47 @@ def represent_mix_lookup(labels, model, op):
     :param model:
     :return:
     '''
+
+    i = 0   # nr of keys not found
     X = []
     for j, label in enumerate(labels):
-        actual_utt = list(model.docvecs[label])
+
+        try:
+            actual_vector = get_lookedup_vector(model, label)
+        except Doc2VecKeyError:
+            i += 1
+            continue
+
+        actual_utt = list(actual_vector)
+
         if j == 0:
             mixed_rep = op(actual_utt, actual_utt)
         else:
             prev_conv_utt = labels[j-1].split('/')[1].split('_')[0]
             actual_conv_utt = label.split('/')[1].split('_')[0]
-            prev_utt = list(model.docvecs[labels[j-1]]) if prev_conv_utt == actual_conv_utt else actual_utt
+
+            try:
+                prev_vector = get_lookedup_vector(model, labels[j-1])
+            except Doc2VecKeyError:
+                i += 1
+                continue
+
+            prev_utt = list(prev_vector) if prev_conv_utt == actual_conv_utt else actual_utt
             mixed_rep = op(prev_utt, actual_utt)
+
         X.append(mixed_rep)
-        sys.stderr.write("\r");
-        sys.stderr.write("utterance %s" % j);
-        sys.stderr.flush();
+        if (j+1) % 1000 == 0:
+            sys.stderr.write("\r");
+            sys.stderr.write("utterance %s" % (j+1));
+            sys.stderr.flush();
+
+    sys.stderr.write("\r");
+    sys.stderr.write("utterance %s" % (j+1));
+    sys.stderr.flush();
     sys.stderr.write("\n")
+
+    if i > 0:
+        sys.stderr.write('## WARNING: Some samples were discarded!\n')
 
     return X
 
@@ -221,7 +282,8 @@ def baseline_scores(train_utt, train_Y, test_utt, test_Y):
     
     
 
-def evaluate_model(embedding_model_location):
+
+def evaluate_model(embedding_model_location, with_context=False, f=e_add, aggregated_tagset=False):
     # load training and test data
     train_utt, train_Y, test_utt, test_Y = load_data()
 
@@ -236,9 +298,18 @@ def evaluate_model(embedding_model_location):
     # train_X = represent_simple(train_utt, embedding_model)
     # test_X = represent_simple(test_utt, embedding_model)
 
-    # train_X = represent_lookup(train_Y, embedding_model)
-    # test_X = represent_simple(test_utt, embedding_model)
+    if with_context:
+        # ---------- lqrz: add or concatenate the previous utterance
+        # f = concat
+        # f = e_add
+        test_X = represent_mix_simple(test_utt, test_Y, embedding_model, f)
+        train_X = represent_mix_lookup(train_Y, embedding_model, f)
+        # ----------
+    else:
+        train_X = represent_lookup(train_Y, embedding_model)
+        test_X = represent_simple(test_utt, embedding_model)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     #---------- lqrz: add or concatenate the previous utterance
     f = concat
@@ -254,9 +325,11 @@ def evaluate_model(embedding_model_location):
     train_X = represent_mix_lookup(train_Y, embedding_model, f)
     # ----------
 >>>>>>> 793dbe85b25948c57615d2588596dfec20dd1e42
+=======
+>>>>>>> c913c8746a8277cc7971c9bcc0090738ade2b633
 
     # encode tags
-    train_Y, test_Y = encode_tags(train_Y, test_Y)
+    train_Y, test_Y = encode_tags(train_Y, test_Y, aggregated_tagset=aggregated_tagset)
 
     # print np.array(train_X).shape, np.array(test_X).shape, np.array(train_Y).shape, np.array(test_Y).shape
     print "Training classifiers"
@@ -266,6 +339,7 @@ def evaluate_model(embedding_model_location):
     # print "SVM Accuracy: ", cl.SVM_classifier(train_X, train_Y, test_X, test_Y)
     print "NB Accuracy: ", cl.NB_classifier(train_X, train_Y, test_X, test_Y)
     print "MLP Accuracy: ", cl.MLP_classifier(train_X, train_Y, test_X, test_Y, n_iter=10)
+
 
 def classify_context_dependent():
     # load data as:
@@ -369,4 +443,8 @@ if __name__ == '__main__':
     # evaluate_model('data/models/swda_only_300')
     # train_utt, train_Y, test_utt, test_Y = load_data()
     # baseline_scores(train_utt, train_Y, test_utt, test_Y)
-    # evaluate_model('data/models/swda_only_int_10_300_agg')
+
+
+    # if with_context selected, then choose an agg function such as 'concat' or 'e_add'
+    evaluate_model('data/models/swda_only_10_300', with_context=True, f=e_add, aggregated_tagset=True)
+
