@@ -1,6 +1,7 @@
 \section{Utterance Embeddings}\label{sec:utt2vec}
-\roger{This section still contains some redundant parts and needs to be restructured.}
-\david{I did a first attempt at fixing it, but it still needs some (small) updates}
+%\roger{This section still contains some redundant parts and needs to be restructured.}
+%\david{I did a first attempt at fixing it, but it still needs some (small) updates}
+To represent utterances as dense distributional vectors we use techniques from \newcite{le2014distributed}. How these representations are found will be explained in this section, where we start with word embeddings as proposed by \newcite{mikolov2013efficient} and then extend this to find embeddings for a sequence of words of an arbitrary length.
 
 \subsection{Word Embeddings}
 Neural networks for distributional semantics has gained relevant importance in the past years since the publication of the first neural network word embedding models.
@@ -18,7 +19,7 @@ Figure~\ref{fig:w2v_example} shows a typical example where simple vector additio
 \end{figure}
 
 In distributional semantic models, word embeddings are learned by predicting words within a context of other words.
-Based on the fact that similar words occur in similar contexts, these models are capable of successfully representing words in high-dimensional vectors. 
+Based on the assumption that similar words occur in similar contexts, these models are capable of successfully representing words in high-dimensional vectors. 
 %In order to get vector representations from utterances, we use an extension of the word embeddings neural network proposed by Mikolov\cite{mikolov2013efficient}. 
 
 Originally, these approaches had two main architectures, know as \emph{Continuous-bag-of-words} and \emph{Skip-gram}. In the first case, the neural networks were optimized to predict the next word given its context, whereas in the latter, the context is predicted given a certain word.
