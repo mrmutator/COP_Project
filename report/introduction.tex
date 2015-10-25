@@ -10,15 +10,15 @@
 %\end{itemize}
 Discourse structure analysis is essential for understanding spontaneous dialogs and developing human-computer dialog systems.
 An essential part of discourse structure analysis is the identification of dialog act classes (e.\ g.\ \emph{questions}, \emph{self-talks}, \emph{statements}, \emph{backchannels}).
-As defined by Austin \shortcite{john1962austin}, dialog acts present linguistic abstractions of the illocutionary force of speech acts and model the communicative intention of an utterance in a conversation.
+As defined by Austin \shortcite{john1962austin}, dialog acts present linguistic abstractions of the ilocutionary force of speech acts and model the communicative intention of an utterance in a conversation.
 There are several tasks that are require utterances to be tagged with dialog acts.
 Examples of these include speech recognition, speech synthesis, summarization, and of course, human-machine dialog systems.
 The correct identification of dialog act tags for utterances is thus an important research topic.
 
 
 Table~\ref{tab:swda_example} shows an example of dialog acts from the Switchboard corpus we are trying to classify.
-The table already gives an idea that some of the 43 dialog acts might have a rather closed set of possible realisations (e.g. the classes \emph{Agree} or \emph{Acknowledge}) whereas classes like \emph{Statement} can contain utterances of almost any content.
-Although the individual words in an utterance are important cues, we argue that the meaning of an utterance as a whole is essential for tagging it correctly.
+The table already gives an idea that some of the 42 dialog acts might have a rather closed set of possible realisations (e.g. the classes \emph{Agree} or \emph{Acknowledge}) whereas classes like \emph{Statement} can contain utterances of almost any content.
+Although the individual words in an utterance are important cues, we argue that the ilocutionary force, and thus the dialog act tag, of an utterance is derived from: 1) the \emph{words} in that utterance, 2) their \emph{composition} and 3) the \emph{context} of the dialog as a whole. 
 
 
 
@@ -32,7 +32,7 @@ Although the individual words in an utterance are important cues, we argue that 
 \hline
 Wh-Question & A: how old is your daughter?\\
 Statement-non-opinion & B: she's three.\\
-Summarize & oh , A: so she's a little one.\\
+Summarize & A: oh , so she's a little one.\\
 Agree & B: yes.\\
 Acknowledge & A: yeah.\\
 Statement-non-opinion & B: she's, she's little.\\
@@ -46,7 +46,7 @@ For the purpose of this work, we extract feature representations for entire utte
 We therefore build a distributional semantic model that learns vector representations for entire utterances and then use these vector features as inputs for different machine learning classifiers, expecting that the embeddings can model the meaning of an entire utterance.
 Several techniques can be used for mapping text units to a high dimensional real value space.
 Utterance embeddings have the attractive property of representing an entire textual sequence as a vector while taking word order into account, as opposed to the classical \emph{Bag-of-words} approach in which word order is not preserved and in which resulting vectors show only little semantic relations.
-We expect this additional information to play an important role in the classification task. In order to infer those embeddings we use the \emph{paragraph2vec} framework recently introduced by \cite{le2014distributed}, which is based on the earlier word embedding models by \cite{mikolov2013efficient}.
+We expect this additional information to play an important role in the classification task. In order to infer those embeddings we use the \emph{paragraph2vec} framework recently introduced by \newcite{le2014distributed}, which is based on the earlier word embedding models by \newcite{mikolov2013efficient}.
 
 For the actual dialog act tagging we treat the problem as a multi-class classification task and classify utterances both in isolation as well as in the context of the previous utterances.
 We evaluate the tagging accuracy and compare different models.
