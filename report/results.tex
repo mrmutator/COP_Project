@@ -29,19 +29,21 @@ Different setting were used to find these embeddings, we varied the training dat
 With these utterance embeddings we trained Naive Bayes, K-Nearest Neighbor and Multilayer Perceptron classifiers.
 In Table~\ref{tab:results} the results are presented. \david{Report best result here}
 
-\begin{table}[]
+\begin{table*}[]
 \centering
-\small
 \begin{tabular}{llll|lll}
                    & \multicolumn{3}{c|}{full tagset} & \multicolumn{3}{c}{agg. tagset} \\
                    & NB      & KNN     & MLP     & NB     & KNN     & MLP     \\
 \hline
-SWDA               &         &         &         &        &         &         \\
-SWDA+BNC         &         &         &         &        &         &         \\
+baseline BOW      & 59.98\%  & 39.57\% & -       & 72.71\%& 49.61\% &  -         \\
+SWDA               & 38.18\%        & 54.55\%        &  50.32\%       &  59.55\%      &  70.82\%       &  66.76\%       \\
+SWDA+BNC         & 38.16\%        &  53.86\%       &  51.40\%       &  60.10\%      &  68.75\%       &  68.39\%       \\
+SWDA concat      & 27.24\%        & 33.29\%        &  51.42\%       & 51.21\%       &  43.87\%       &  67.98\%       \\
+SWDA+BNC concat  & 25.02\%        & 34.07\%        &                & 51.68\%       & 44.64\%        &                 \\
 \end{tabular}
-\caption{Example results table no context. And we need the same table for context.}
+\caption{Tagging accuracies for different models and tagsets. All models were trained with 50 iterations and pretrained word embeddings.}
 \label{tab:results}
-\end{table}
+\end{table*}
 
 
 \subsection{Using context}
