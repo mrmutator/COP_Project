@@ -4,6 +4,7 @@ from gensim.models import Doc2Vec
 from corpora import get_utterances_from_file
 from sklearn import preprocessing
 from sklearn import naive_bayes
+from collections import Counter
 from sklearn.feature_extraction.text import CountVectorizer
 import hidden_markov_model as hmm
 import numpy as np
@@ -267,14 +268,11 @@ def baseline_scores(train_utt, train_Y, test_utt, test_Y):
     print "Calculating baseline BOW scores"
     # Baseline scores, use BOW representation of utterances
     train_X, test_X = bow_representation(train_utt, test_utt)
-<<<<<<< HEAD
-    # print "BOW representation created"
-=======
 
     train_Y, test_Y = encode_tags(train_Y, test_Y)
 
     print "BOW representation created"
->>>>>>> 793dbe85b25948c57615d2588596dfec20dd1e42
+
     print "KNN Accuracy: ", cl.KNN_classifier(train_X, train_Y, test_X, test_Y)
     # print "SVM Accuracy: ", cl.SVM_classifier(train_X, train_Y, test_X, test_Y)
     print "NB Accuracy: ", cl.NB_classifier(train_X, train_Y, test_X, test_Y)
@@ -309,24 +307,6 @@ def evaluate_model(embedding_model_location, with_context=False, f=e_add, aggreg
         train_X = represent_lookup(train_Y, embedding_model)
         test_X = represent_simple(test_utt, embedding_model)
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    #---------- lqrz: add or concatenate the previous utterance
-    f = concat
-    # f = e_add
-    test_X = represent_mix_simple(test_utt, embedding_model, f)
-    train_X = represent_mix_lookup(train_Y, embedding_model, f)
-    #----------
-=======
-    # ---------- lqrz: add or concatenate the previous utterance
-    # f = concat
-    f = e_add
-    test_X = represent_mix_simple(test_utt, test_Y, embedding_model, f)
-    train_X = represent_mix_lookup(train_Y, embedding_model, f)
-    # ----------
->>>>>>> 793dbe85b25948c57615d2588596dfec20dd1e42
-=======
->>>>>>> c913c8746a8277cc7971c9bcc0090738ade2b633
 
     # encode tags
     train_Y, test_Y = encode_tags(train_Y, test_Y, aggregated_tagset=aggregated_tagset)
@@ -436,15 +416,18 @@ if __name__ == '__main__':
     # classify_context_dependent()
 
     train_utt, train_Y, test_utt, test_Y = load_data()
+    
     train_Y, test_Y = encode_tags(train_Y,test_Y)
-    baseline_scores(train_utt, train_Y, test_utt, test_Y)
-    # train_utt, train_Y, test_utt, test_Y = load_data()
+    c = Counter(test_Y)
+    print c.most_common(1)[0][1]/float(len(test_Y))
     # baseline_scores(train_utt, train_Y, test_utt, test_Y)
-    # evaluate_model('data/models/swda_only_300')
-    # train_utt, train_Y, test_utt, test_Y = load_data()
-    # baseline_scores(train_utt, train_Y, test_utt, test_Y)
+    # # train_utt, train_Y, test_utt, test_Y = load_data()
+    # # baseline_scores(train_utt, train_Y, test_utt, test_Y)
+    # # evaluate_model('data/models/swda_only_300')
+    # # train_utt, train_Y, test_utt, test_Y = load_data()
+    # # baseline_scores(train_utt, train_Y, test_utt, test_Y)
 
 
-    # if with_context selected, then choose an agg function such as 'concat' or 'e_add'
-    evaluate_model('data/models/swda_only_10_300', with_context=True, f=e_add, aggregated_tagset=True)
+    # # if with_context selected, then choose an agg function such as 'concat' or 'e_add'
+    # evaluate_model('data/models/swda_only_10_300', with_context=True, f=e_add, aggregated_tagset=True)
 
