@@ -5,8 +5,8 @@ To represent utterances as dense distributional vectors we will use techniques f
 
 \subsection{Word Embeddings}
 Neural networks for distributional semantics have gained relevant importance in the past years since the publication of the first neural network word embedding models.
-One of the main reasons for this was the discovery that dense high-dimensional vector representations of words are able to capture semantic relations between words \shortcite{mikolov2013efficient}.
-Figure~\ref{fig:w2v_example} shows a typical example where simple vector addition and subtraction lead to analogies such as: The vector difference between \textit{woman} and \textit{man} is the same as between \textit{aunt} and \textit{uncle}.
+One of the main reasons for this was the discovery that dense high-dimensional vector representations of words are able to capture semantic relations between them \shortcite{mikolov2013efficient}.
+Figure~\ref{fig:w2v_example} shows a typical example where simple vector addition and subtraction lead to analogies such as: \textit{Woman} is to \textit{Man} what \textit{Aunt} is to \textit{Uncle}.
 
 
 \begin{figure}
@@ -23,7 +23,7 @@ Based on the assumption that similar words occur in similar contexts, these mode
 %In order to get vector representations from utterances, we use an extension of the word embeddings neural network proposed by Mikolov\cite{mikolov2013efficient}. 
 
 Originally, these approaches had two main architectures, know as \emph{Continuous-bag-of-words} and \emph{Skip-gram}. In the first case, the neural networks were optimized to predict the next word given its context, whereas in the latter, the context is predicted given a certain word.
-Due to word co-occurrences, these models are able to effectively capture a semantic representation of the words. 
+Due to word co-occurrences, these models are able to effectively capture the semantic representation of the words. 
 %The co-occurrence property present at the word level is no longer valid when handling phrases.
 
 \subsection{Utterance embeddings} 
