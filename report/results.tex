@@ -9,6 +9,19 @@ We then train a Naive Bayes model and a K-Nearest Neighbor classifier on the dia
 The results can be seen in Table \david{make table with results} and \david{a seperate table for aggregated tag set pherhaps?} respectively. \david{Report best baseline explicitly here}.
 Furthermore we calculate a trivial baseline where every utterance is classified as the most frequent dialog act tag, this would result in an accuracy of $31.47\%$.
 
+\begin{table}[h]
+	\centering
+
+	\begin{tabular}{l|r}
+		& \textbf{Accuracy} \\ \hline
+		\newcite{kalchbrenner} & 73.9 \%           \\
+		\newcite{stolcke2000}  & 71.0 \%           \\
+		\newcite{milajevs}     & 63.9 \%          
+	\end{tabular}
+		\caption{Accuracy scores from other work}
+		\label{tab:sota}
+\end{table}
+
 \subsection{Classification using Utterance Embeddings}
 \david{Do we want to present everything here or just the best?}
 We found embeddings for utterances as discussed in section \ref{sec:utt2vec}.
