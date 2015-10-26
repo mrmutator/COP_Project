@@ -13,7 +13,7 @@
 
 We evaluate our utterance embedding features for dialog act tagging in two different settings:
 1) We tag each utterance independent of the context it appears in.
-2) We include the context of the previous utterance by concatenating the utterance embeddings of the previous utterance and the current utterance to obtain a very simplified discourse model as discussed in Section 2.
+2) We include the context of the previous utterance by aggregating the utterance embeddings of the previous utterance and the current utterance to obtain a very simplified discourse model as discussed in Section 2.
 In addition, we experiment with two different tagset granularities.
 The dataset, the actual classifiers and the tagsets are described in the following two subsections.
 %\roger{Baselines}\david{we address the baseline at the start of the next section}
@@ -126,7 +126,7 @@ The utterances in the SWDA dataset are more fragmentary and thus usually shorter
 \subsection{Classifiers}
 For the actual classification task we use three different classifiers from the Python \emph{Scikit Learn}\footnote{http://scikit-learn.org} package:
 1) a Naive Bayes classifier, which is well suited for sparse representations like the bag-of-words vectors that we use for our baseline.
-2) a K-Nearest Neighbor classifier with $K=5$ neighbors, the \emph{euclidean} distance metric and uniform weights.
+2) a K-Nearest Neighbor classifier with $K=5$ neighbors, \emph{euclidean distance} as distance metric and uniform weights.
 This technique is more suited for the dense representations like our utterance embeddings.
 3) a Multilayer Perceptron with one hidden layer of $100$ dimensions and a softmax layer for classification.
 The network was trained for 25 iterations at a learning rate of $10^{-3}$.
