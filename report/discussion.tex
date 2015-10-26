@@ -1,7 +1,10 @@
 \section{Conclusion}\label{sec:conclusion}
 We see that all models trained on utterance embeddings found with the techniques from \newcite{le2014distributed} outperform the trivial baseline of predicting the most frequent tag. This supports the hypothesis that such distributional representations can be used successfully for dialog act tagging.
 
-However a simple model using a bag of words representation and a Naive Bayes classifier outperforms these more intricate representations and models. \david{why is this? because of the short utterances? seems strange...}
+However a simple model using a bag of words representation and a Naive Bayes classifier outperforms these more intricate representations and models.
+One reason for that might be that the utterance embeddings do not correctly capture all the information in an utterance. This might be the result of the short length that an average utterance has.
+As the paragraph2vec framework has mainly been evaluated on entire paragraphs and documents, it is possible that shorter text sequences result in lower-quality representations.
+In addition, we also saw that some dialog acts like \emph{Statements} theoretically have an infinite amount of possible utterances. A semantic representation of such utterances might thus not be enough to correctly classify such dialog acts.
 
 Moreover we see that training the utterance embeddings with extra samples from the BNC does not have a big effect on the accuracy of the classifiers. This could be explained by the fact that the utterances in the BNC have been cleaned to be more like grammatically correct sentences, where the Switchboard corpus is comprised of more accurately transcribed utterances. Therefore we recommend future work to use additional data that is more similar to the data used in training and evaluating the classifier in order to investigate whether this increases the accuracy of the tagging.
 
