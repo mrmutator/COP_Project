@@ -14,9 +14,9 @@
 We evaluate our utterance embedding features for dialog act tagging in two different settings:
 1) We tag each utterance independent of the context it appears in.
 2) We include the context of the previous utterance by concatenating the utterance embeddings of the previous utterance and the current utterance to obtain a very simplified discourse model as discussed in Section 2.
-In addition, we experiment with two different tagset granulairities.
+In addition, we experiment with two different tagset granularities.
 The dataset, the actual classifiers and the tagsets are described in the following two subsections.
-\roger{Baselines}
+\roger{Baselines}\david{we address the baseline at the start of the next section}
 
 \subsection{Dialog datasets}
 
@@ -25,10 +25,11 @@ For that purpose, we evaluate the actual dialog act tagging on the Switchboard D
 The corpus is a compilation of telephone transcripts between two interlocutors.
 It contains a total of 205,000 utterances and 1.4 million words.
 Each utterance is assigned one of 42 possible dialog act tags (according to the Discourse Annotation and Markup System of Labeling - DAMSL).
-In our experiments, we also use a coarser tagset where we manually map the original tags into \roger{how many?} classes. The mapping is described in \roger{appendix or where?} \david{we also need to tell why we do this}.
 Table \ref{tab:swda_example} shows an example of a small excerpt from the corpus with the respective dialog act labels. 
 
-We use the same training and test split as described by Stolcke \shortcite{stolcke2000}, which uses 1,115 dialogs for training and 19 dialogs for testing and which has been widely used in previous work. \david{maybe a footnote with a link to where we found this?}
+In our experiments, we also use a coarser tagset where we manually map the original 42 tags into 8 classes. The mapping is described in \roger{appendix or where?}. The motivation for this coarser tag set is we expect classifiers to more likely confuse two utterances that are close in \david{form/meaning}, for example a yes-no-question and an action-directive. If this is the case the performance of the classifiers on the coarser tag set is expected to increase substantially.
+
+We use the same training and test split as described by \newcite{stolcke2000}, which uses 1,115 dialogs for training and 19 dialogs for testing and which has been widely used in previous work. \david{maybe a footnote with a link to where we found this?}
 The utterances are preprocessed by removing linguistic annotations and any interpunctuation except for periods, question marks and exclamation marks.
 Additionally, as suggested by \newcite{milajevs}, utterances that complete previously interrupted utterances, which are marked with a continuation tag \texttt{+}, were concatenated with their initial segment, which also contains the correct dialog act label for the complete utterance. This is motivated by the fact that this continuation tag does not capture the ilocutionary act of the utterance, but that it shares this with the interrupted utterance.
 
@@ -122,7 +123,7 @@ The utterances in the SWDA dataset are more fragmentary and thus usually shorter
 \subsection{Classifiers}
 For the actual classification task we use three different classifiers which we treat as ``black-boxes,'' i.\ e.\ we do not attempt to evaluate their hyperparameters. \david{should we say it like this?}
 
-First of all we used a Naive Bayes classifier \newcite{naivebabes} from Scikit Learn \footnote{\url{http://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html#sklearn.naive_bayes.GaussianNB}}. This is a technique is usually quite strong with sparse representations as bag of words, which we will use for our baseline \david{does this have any hyperparameters?}
+First of all we used a Naive Bayes classifier \newcite{naivebabes} from Scikit Learn \footnote{\url{http://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html#sklearn.naive_bayes.GaussianNB}}. This technique is well suited for sparse representations as bag of words, which we will use for our baseline. \david{does this have any hyperparameters?}
 
 Also a K-Nearest Neighbor classifier from Scikit Learn \footnote{\url{http://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html}} with $K=5$ neighbors, \emph{euclidean} distance metric and uniform weights was trained. This technique is more suited for the dense representations we find as utterance embeddings.
 
