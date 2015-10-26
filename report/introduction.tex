@@ -8,7 +8,7 @@
 %	\item ...
 %	\item Set up rest of report
 %\end{itemize}
-Discourse structure analysis is essential for understanding spontaneous dialogs and developing human-computer dialog systems.
+Discourse structure analysis is fundamental for understanding spontaneous dialogs and developing human-computer dialog systems.
 An essential part of discourse structure analysis is the identification of dialog act classes (e.\ g.\ \emph{questions}, \emph{self-talks}, \emph{statements}, \emph{backchannels}).
 As defined by Austin \shortcite{john1962austin}, dialog acts present linguistic abstractions of the ilocutionary force of speech acts and model the communicative intention of an utterance in a conversation.
 There are several tasks that require utterances to be tagged with dialog acts.
@@ -50,7 +50,7 @@ We expect this additional information to play an important role in the classific
 
 For the actual dialog act tagging we treat the problem as a multi-class classification task and classify utterances both in isolation as well as in the context of the previous utterances.
 We evaluate the tagging accuracy and compare different models.
-Besides the baselines provided by research from previous work, we compare the results against a simple baseline that uses a bag-of-words (BOW) representation for each utterance. 
+Besides the results provided by research from previous work, we compare the performance of our approach against a simple baseline that uses a bag-of-words (BOW) representation for each utterance. 
 
 We will test a total of 3 hypotheses in this report.
 \begin{description}
@@ -59,4 +59,4 @@ We will test a total of 3 hypotheses in this report.
 	\item[Hypothesis 3] Using additional data in the unsupervised training of utterance embeddings increases the accuracy of the classifiers.
 \end{description}
 
-The outline of this report is set as follows: In Section 2, we present relevant approaches that aim at classifying dialog acts and briefly describe their main characteristics and results. In Section 3 we describe the concept of utterance embeddings and their training in more detail. Section 4 specifies the datasets and the details of our classification pipeline. The results of the experiments are presented in Section 5. Finally, Section 6 includes conclusions drawn from this work as well as issues and future work. \lau{check}
+The outline of this report is set as follows: In Section 2, we present relevant approaches that aim at classifying dialog acts and briefly describe their main characteristics and results. In Section 3 we describe the concept of utterance embeddings and their training in more detail. Section 4 specifies the datasets and the details of our classification pipeline. The results of the experiments are presented in Section 5. Finally, Section 6 includes conclusions drawn from this work as well as issues and future work.
