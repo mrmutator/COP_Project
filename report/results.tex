@@ -12,8 +12,8 @@ Furthermore we calculated a trivial baseline where every utterance is classified
 To compare our results to those of the state of the art models proposed in earlier work we present their accuracy score in Table~\ref{tab:sota}. These models were evaluated on the same test set.
 \begin{table}[t]
 	\centering
-	\begin{tabular}{l|r}
-		& \textbf{Accuracy} \\ \hline
+	\begin{tabular}{r|r}
+		& \textbf{accuracy} \\ \hline
 		\newcite{kalchbrenner} & 73.9 \%           \\
 		\newcite{stolcke2000}  & 71.0 \%           \\
 		\newcite{milajevs}     & 63.9 \%          
@@ -30,9 +30,9 @@ In Table~\ref{tab:results} the results are presented.
 
 \begin{table*}[]
 \centering
-\begin{tabular}{llll|lll}
-                   & \multicolumn{3}{c|}{full tagset} & \multicolumn{3}{c}{agg. tagset} \\
-                   & NB      & KNN     & MLP     & NB     & KNN     & MLP     \\
+\begin{tabular}{r|lll|lll}
+                   & \multicolumn{3}{c|}{\textbf{full tagset}} & \multicolumn{3}{c}{\textbf{aggregated tagset}} \\
+                   & \textbf{NB}      & \textbf{KNN}     & \textbf{MLP}     & \textbf{NB}     & \textbf{KNN}     & \textbf{MLP}     \\
 \hline
 baseline BOW      & 59.98\%  & 39.57\% & -       & 72.71\%& 49.61\% &  -         \\
 SWDA               & 38.18\%        & 54.55\%        &  50.32\%       &  59.55\%      &  70.82\%       &  66.76\%       \\
