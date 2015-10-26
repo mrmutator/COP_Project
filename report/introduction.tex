@@ -11,7 +11,7 @@
 Discourse structure analysis is essential for understanding spontaneous dialogs and developing human-computer dialog systems.
 An essential part of discourse structure analysis is the identification of dialog act classes (e.\ g.\ \emph{questions}, \emph{self-talks}, \emph{statements}, \emph{backchannels}).
 As defined by Austin \shortcite{john1962austin}, dialog acts present linguistic abstractions of the ilocutionary force of speech acts and model the communicative intention of an utterance in a conversation.
-There are several tasks that are require utterances to be tagged with dialog acts.
+There are several tasks that require utterances to be tagged with dialog acts.
 Examples of these include speech recognition, speech synthesis, summarization, and of course, human-machine dialog systems.
 The correct identification of dialog act tags for utterances is thus an important research topic.
 
@@ -42,7 +42,7 @@ Statement-non-opinion & B: she's, she's little.\\
 \label{tab:swda_example}
 \end{table}
 
-For the purpose of this work, we extract feature representations for entire utterances in an unsupervised fashion.
+For the purpose of this work, we will focus on capturing the first two of these three aspects. We extract feature representations for complete, but isolated, utterances in an unsupervised fashion.
 We therefore build a distributional semantic model that learns vector representations for entire utterances and then use these vector features as inputs for different machine learning classifiers, expecting that the embeddings can model the meaning of an entire utterance.
 Several techniques can be used for mapping text units to a high dimensional real value space.
 Utterance embeddings have the attractive property of representing an entire textual sequence as a vector while taking word order into account, as opposed to the classical \emph{Bag-of-words} approach in which word order is not preserved and in which resulting vectors show only little semantic relations.
@@ -52,4 +52,4 @@ For the actual dialog act tagging we treat the problem as a multi-class classifi
 We evaluate the tagging accuracy and compare different models.
 Besides the baselines provided by research from previous work, we compare the results against a simple baseline that uses a bag-of-words (BOW) representation for each utterance. 
 
-The outline of this report is set as follows: In Section 2, we present relevant approaches that aim at classifying dialog acts and briefly describe their main characteristics and results. In Section 3 we describe the concept of utterance embeddings and their training in more detail. Section 4 specifies the datasets and the details of our classification pipeline. An exhaustive analysis of the results of the experiments is presented in Section 5. Finally, Section 6 includes conclusions drawn from this work as well as issues and future work. \lau{check}
+The outline of this report is set as follows: In Section 2, we present relevant approaches that aim at classifying dialog acts and briefly describe their main characteristics and results. In Section 3 we describe the concept of utterance embeddings and their training in more detail. Section 4 specifies the datasets and the details of our classification pipeline. The results of the experiments are presented in Section 5. Finally, Section 6 includes conclusions drawn from this work as well as issues and future work. \lau{check}
