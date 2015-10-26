@@ -21,7 +21,7 @@ The dataset, the actual classifiers and the tagsets are described in the followi
 \subsection{Dialog datasets}
 
 The dialog act classifiers are trained in a supervised fashion, which requires labeled data.
-For that purpose, we evaluate the actual dialog act tagging on the Switchboard Dialog Act corpus (SwDA) \roger{cite}.
+For that purpose, we evaluate the actual dialog act tagging on the Switchboard Dialog Act corpus (SwDA) collected by \newcite{switchboard}.
 The corpus is a compilation of telephone transcripts between two interlocutors.
 It contains a total of 205,000 utterances and 1.4 million words.
 Each utterance is assigned one of 42 possible dialog act tags (according to the Discourse Annotation and Markup System of Labeling - DAMSL).
@@ -34,7 +34,7 @@ Additionally, as suggested by \newcite{milajevs}, utterances that complete previ
 
 As mentioned before, the training of the utterance embeddings is completely unsupervised and does not require any labeled data.
 For that reason, we experiment with expanding our data for the training of the utterance representations.
-In addition to the Switchboard corpus, we use the spoken dialog data from the British National Corpus (BNC) \roger{cite}.
+In addition to the Switchboard corpus, we use the spoken dialog data from the British National Corpus (BNC) created by \newcite{BNC}.
 The resulting dataset from the BNC contains approximately 1 million utterances. 
 The BNC utterances, however, differ inherently from the Switchboard utterances as they are usually longer and normalized to full grammatical sentences.
 The utterances in the SWDA dataset are more fragmentary and thus usually shorter.
