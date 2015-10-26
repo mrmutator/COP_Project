@@ -27,7 +27,7 @@ It contains a total of 205,000 utterances and 1.4 million words.
 Each utterance is assigned one of 42 possible dialog act tags (according to the Discourse Annotation and Markup System of Labeling - DAMSL).
 Table \ref{tab:swda_example} shows an example of a small excerpt from the corpus with the respective dialog act labels. 
 
-In our experiments, we also use a coarser tagset where we manually map the original 42 tags into 8 classes. The mapping is described in \roger{appendix or where?}. The motivation for this coarser tag set is we expect classifiers to more likely confuse two utterances that are close in \david{form/meaning}, for example a yes-no-question and an action-directive. If this is the case the performance of the classifiers on the coarser tag set is expected to increase substantially.
+In our experiments, we also use a coarser tagset where we manually map the original 42 tags into 8 classes. The mapping is described in Table~\ref{tab:labels} in the Appendix. The motivation for this coarser tag set is we expect classifiers to more likely confuse two utterances that are close in \david{form/meaning}, for example a yes-no-question and an action-directive. If this is the case the performance of the classifiers on the coarser tag set is expected to increase substantially.
 
 We use the same training and test split as described by \newcite{stolcke2000}, which uses 1,115 dialogs for training and 19 dialogs for testing and which has been widely used in previous work. \david{maybe a footnote with a link to where we found this?}
 The utterances are preprocessed by removing linguistic annotations and any interpunctuation except for periods, question marks and exclamation marks.
