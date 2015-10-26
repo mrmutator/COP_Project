@@ -1,11 +1,11 @@
 \section{Utterance Embeddings}\label{sec:utt2vec}
 %\roger{This section still contains some redundant parts and needs to be restructured.}
 %\david{I did a first attempt at fixing it, but it still needs some (small) updates}
-To represent utterances as dense distributional vectors we use techniques from \newcite{le2014distributed}. How these representations are found will be explained in this section, where we start with word embeddings as proposed by \newcite{mikolov2013efficient} and then extend this to find embeddings for a sequence of words of an arbitrary length.
+To represent utterances as dense distributional vectors we will use techniques from \newcite{le2014distributed}. Their work will be explained exhaustively in this section, we start with presenting word embeddings as proposed by \newcite{mikolov2013efficient} and then extend this idea in order to find embeddings for a sequence of words of an arbitrary length.
 
 \subsection{Word Embeddings}
-Neural networks for distributional semantics has gained relevant importance in the past years since the publication of the first neural network word embedding models.
-One of the main reasons was the discovery that dense high-dimensional vector representations of words are able to capture semantic relations between words \cite{mikolov2013efficient}.
+Neural networks for distributional semantics have gained relevant importance in the past years since the publication of the first neural network word embedding models.
+One of the main reasons for this was the discovery that dense high-dimensional vector representations of words are able to capture semantic relations between words \shortcite{mikolov2013efficient}.
 Figure~\ref{fig:w2v_example} shows a typical example where simple vector addition and subtraction lead to analogies such as: The vector difference between \textit{woman} and \textit{man} is the same as between \textit{aunt} and \textit{uncle}.
 
 
@@ -27,12 +27,12 @@ Due to word co-occurrences, these models are able to effectively capture a seman
 %The co-occurrence property present at the word level is no longer valid when handling phrases.
 
 \subsection{Utterance embeddings} 
-The approach from \newcite{mikolov2013efficient} is no longer feasible on a level for word sequences such as entire utterances, as the vocabulary of all possible utterances  is infinitely large, as we can construct utterances of any length.
+The approach from \newcite{mikolov2013efficient} is no longer feasible for word sequences such as entire utterances, as the vocabulary of all possible utterances  is infinitely large, because in theory we could construct utterances of any length.
 In order to overcome this sparsity problem, a slightly different framework called \emph{paragraph2vec}\footnote{Note that despite its name, the framework is able to learn embeddings for entire word sequences of any length like sentences, paragraphs or entire documents.} for learning representations of entire word sequences has been proposed by \newcite{le2014distributed}, in which vectors are learned for a sequence from the words within the sequence.
-For our case, the model thus trains utterance embeddings as well as word embeddings.
+For our case, the model trains utterance embeddings as well as word embeddings.
 %The latter are shared for the entire model.
 
-During training, two structures are maintained: one for words, and one for utterance representations.
+During training, two structures are maintained: one for word, and one for utterance representations.
 The word structure is shared across the entire model, but an utterance embedding is trained for each single utterance individually.
 The training task is the same as before: Given a certain window, the model is optimized to predict the missing word.
 However this time, the context representation is constructed using the individual word vectors together with the utterance vector.
