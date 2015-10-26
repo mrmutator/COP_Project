@@ -6,8 +6,8 @@ Also we present some analysis of our distributional representations.
 As a baseline we use a Bag-of-Words representation.
 We represent each utterance as a sparse vector, where every dimension maps to a word in the vocabulary.
 We then train a Naive Bayes model and a K-Nearest Neighbor classifier on the dialog act tagging task, both for the full tag set of 42 tags as well as on the aggregated tag set of 8 tags.
-The results can be seen in Table~\ref{tab:results}. \david{Report best baseline explicitly here}.
-Furthermore we calculate a trivial baseline where every utterance is classified as the most frequent dialog act tag, this would result in an accuracy of $31.47\%$.
+The results can be seen in Table~\ref{tab:results}. The strongest baseline we found was $59.98\%$ accuracy with the NB classifier.
+Furthermore we calculated a trivial baseline where every utterance is classified as the most frequent dialog act tag, this would result in an accuracy of $31.47\%$.
 
 To compare our results to those of the state of the art models proposed in earlier work we present their accuracy score in Table~\ref{tab:sota}. These models were evaluated on the same test set.
 \begin{table}[t]
@@ -23,11 +23,10 @@ To compare our results to those of the state of the art models proposed in earli
 \end{table}
 
 \subsection{Classification using Utterance Embeddings}
-\david{Do we want to present everything here or just the best?}
 We found embeddings for utterances as discussed in section \ref{sec:utt2vec}.
-Different setting were used to find these embeddings, we varied the training data, number of training epochs and whether or not we used pretrained word embeddings.
+Different setting were used to find these embeddings, we varied the training data, used 50 training epochs and pretrained word embeddings.
 With these utterance embeddings we trained Naive Bayes, K-Nearest Neighbor and Multilayer Perceptron classifiers.
-In Table~\ref{tab:results} the results are presented. \david{Report best result here}
+In Table~\ref{tab:results} the results are presented.
 
 \begin{table*}[]
 \centering
@@ -50,7 +49,7 @@ SWDA+BNC concat  & 25.02\%        & 34.07\%        &                & 51.68\%   
 To use the contextual information of the dialog to classify dialog act tags, we experimented with two simple approaches. We either concatenated or summed the embedding of the previous utterance to the embedding of the current one.
 The first approach nicely represents the sequentiality of the dialog but it doubles the amount of features for the classifier to consider.
 The latter approach is not affected by this curse of dimensionality, however it does lose all sequential information present in the dialog.
-The results for both approaches can also be seen in Table~\ref{tab:results}. \david{Also here, best result in text}
+The results for both approaches can also be seen in Table~\ref{tab:results}.
 
 \subsection{Error Analysis}
 Utterance embeddings have the property of encapsulating the meaning of utterances from the words that compose them; as with the case of word embeddings, these representations present appealing relations from which similar words (in a semantic sense) appear close by in the high dimension space.
