@@ -44,7 +44,7 @@ Statement-non-opinion & B: she's, she's little.\\
 
 For the purpose of this work, we will focus on capturing the first two of these three aspects. We extract feature representations for complete, but isolated, utterances in an unsupervised fashion.
 We therefore build a distributional semantic model that learns vector representations for entire utterances and then use these vector features as inputs for different machine learning classifiers, expecting that the embeddings can model the meaning of an entire utterance.
-Several techniques can be used for mapping text units to a high dimensional real value space.
+Several techniques can be used for mapping text units to a high-dimensional real value space.
 Utterance embeddings have the attractive property of representing an entire textual sequence as a vector while taking word order into account, as opposed to the classical \emph{Bag-of-words} approach in which word order is not preserved and in which resulting vectors show only little semantic relations.
 We expect this additional information to play an important role in the classification task. In order to infer those embeddings we use the \emph{paragraph2vec} framework recently introduced by \newcite{le2014distributed}, which is based on the earlier word embedding models by \newcite{mikolov2013efficient}.
 
