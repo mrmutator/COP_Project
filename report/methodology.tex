@@ -29,12 +29,12 @@ Table \ref{tab:swda_example} shows an example of a small excerpt from the corpus
 
 In our experiments, we also use a coarser tagset where we manually map the original 42 tags into 8 classes: \emph{Agreement}, \emph{Answer}, \emph{Communicative}, \emph{Directive}, \emph{Forward\_other}, \emph{Other},  \emph{Statement} and \emph{Understanding}.
 The mapping is described in the appendix.
-The motivation for this coarser tag set is we expect classifiers to more likely confuse two utterances that are close in \david{form/meaning}, for example a yes-no-question and an action-directive.
+The motivation for this coarser tag set is we expect classifiers to more likely confuse two utterances that are close in form, for example a yes-no-question and an action-directive.
 If this is the case the performance of the classifiers on the coarser tag set is expected to increase substantially.
 
 We use the same training and test split as described by \newcite{stolcke2000}, which uses 1,115 dialogs for training and 19 dialogs for testing and which has been widely used in previous work.\footnote{\url{http://web.stanford.edu/~jurafsky/ws97/}}
 The utterances are preprocessed by removing linguistic annotations and any interpunctuation except for periods, question marks and exclamation marks.
-Additionally, as suggested by \newcite{milajevs}, utterances that complete previously interrupted utterances, which are marked with a continuation tag \texttt{+}, were concatenated with their initial segment, which also contains the correct dialog act label for the complete utterance. This is motivated by the fact that this continuation tag does not capture the ilocutionary act of the utterance, but that it shares this with the interrupted utterance.
+Additionally, as suggested by \newcite{milajevs}, utterances that complete previously interrupted utterances, which are marked with a continuation tag \texttt{+}, were concatenated to their initial segment, which also contains the correct dialog act label for the complete utterance. This is motivated by the fact that this continuation tag does not capture the ilocutionary act of the utterance, but that it shares this with the interrupted utterance.
 
 As mentioned before, the training of the utterance embeddings is completely unsupervised and does not require any labeled data.
 For that reason, we experiment with expanding our data for the training of the utterance representations.
